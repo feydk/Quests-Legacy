@@ -63,48 +63,48 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		
 		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
 		
-        if(economyProvider != null)
-        	economy = economyProvider.getProvider();
-        else
-        	throw new RuntimeException("Failed to setup economy.");
-                        
-        crafting_quest = new CraftQuest(this);
-        eating_quest = new EatQuest(this);
-        taming_quest = new TameQuest(this);
-        mining_quest = new MineQuest(this);
-        enchanting_quest = new EnchantQuest(this);
-        fishing_quest = new FishQuest(this);
-        damaging_quest = new DamageQuest(this);
-        smelting_quest = new SmeltQuest(this);
-        killing_quest = new KillQuest(this);
-        trading_quest = new TradeQuest(this);
-        growing_quest = new GrowQuest(this);
-        
-        // Listen for quest specific events.
-        getServer().getPluginManager().registerEvents(crafting_quest, this);
-        getServer().getPluginManager().registerEvents(eating_quest, this);
-        getServer().getPluginManager().registerEvents(taming_quest, this);
-        getServer().getPluginManager().registerEvents(mining_quest, this);
-        getServer().getPluginManager().registerEvents(enchanting_quest, this);
-        getServer().getPluginManager().registerEvents(fishing_quest, this);
-        getServer().getPluginManager().registerEvents(damaging_quest, this);
-        getServer().getPluginManager().registerEvents(smelting_quest, this);
-        getServer().getPluginManager().registerEvents(killing_quest, this);
-        getServer().getPluginManager().registerEvents(trading_quest, this);
-        getServer().getPluginManager().registerEvents(growing_quest, this);
-        
-        // General events.
-        getServer().getPluginManager().registerEvents(this, this);
-        
-        players = new HashMap<UUID, QuestPlayer>();
-        
-        for(Player p : getServer().getOnlinePlayers())
-        {
-        	players.put(p.getUniqueId(), QuestPlayer.getByUUID(p.getUniqueId()));
-        }
-        
-        scheduler = new QuestScheduler(this);
-        scheduler.start();
+		if(economyProvider != null)
+			economy = economyProvider.getProvider();
+		else
+			throw new RuntimeException("Failed to setup economy.");
+		                
+		crafting_quest = new CraftQuest(this);
+		eating_quest = new EatQuest(this);
+		taming_quest = new TameQuest(this);
+		mining_quest = new MineQuest(this);
+		enchanting_quest = new EnchantQuest(this);
+		fishing_quest = new FishQuest(this);
+		damaging_quest = new DamageQuest(this);
+		smelting_quest = new SmeltQuest(this);
+		killing_quest = new KillQuest(this);
+		trading_quest = new TradeQuest(this);
+		growing_quest = new GrowQuest(this);
+		
+		// Listen for quest specific events.
+		getServer().getPluginManager().registerEvents(crafting_quest, this);
+		getServer().getPluginManager().registerEvents(eating_quest, this);
+		getServer().getPluginManager().registerEvents(taming_quest, this);
+		getServer().getPluginManager().registerEvents(mining_quest, this);
+		getServer().getPluginManager().registerEvents(enchanting_quest, this);
+		getServer().getPluginManager().registerEvents(fishing_quest, this);
+		getServer().getPluginManager().registerEvents(damaging_quest, this);
+		getServer().getPluginManager().registerEvents(smelting_quest, this);
+		getServer().getPluginManager().registerEvents(killing_quest, this);
+		getServer().getPluginManager().registerEvents(trading_quest, this);
+		getServer().getPluginManager().registerEvents(growing_quest, this);
+		
+		// General events.
+		getServer().getPluginManager().registerEvents(this, this);
+		
+		players = new HashMap<UUID, QuestPlayer>();
+		
+		for(Player p : getServer().getOnlinePlayers())
+		{
+			players.put(p.getUniqueId(), QuestPlayer.getByUUID(p.getUniqueId()));
+		}
+		
+		scheduler = new QuestScheduler(this);
+		scheduler.start();
 	}
 	
 	@Override
