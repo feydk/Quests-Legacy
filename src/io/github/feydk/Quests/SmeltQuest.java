@@ -51,21 +51,21 @@ public class SmeltQuest extends BaseQuest implements Listener
 			if(config.Materials != null && config.Materials.contains(smelted_item))
 			{
 				// This event is sometimes called twice, so take care of that.
-		        int cachedAmount = config.CachedAmount;
-		        config.CachedAmount = -2;
-		        
-		        if(cachedAmount == -2)
-		        	return;
-		        
-		        int amount = event.getItemAmount();
-		        
-                if(cachedAmount >= 0)
-                   	amount = cachedAmount - amount;
-                
-                if(amount == 0)
-                	return;
-                
-                plugin.updateProgress(player, p, amount);
+				int cachedAmount = config.CachedAmount;
+				config.CachedAmount = -2;
+
+				if(cachedAmount == -2)
+					return;
+
+				int amount = event.getItemAmount();
+
+				if(cachedAmount >= 0)
+					amount = cachedAmount - amount;
+
+				if(amount == 0)
+					return;
+
+				plugin.updateProgress(player, p, amount);
 			}
 		}
 	}
@@ -98,19 +98,19 @@ public class SmeltQuest extends BaseQuest implements Listener
 			if(!checkGenericRequirements(player.getCurrentQuest().getQuest().getConfig(), p))
 				return;
 			
-            if(event.getSlotType() != InventoryType.SlotType.RESULT)
-            	return;
-            
-            if(!event.isShiftClick())
-            	return;
-            
-            ItemStack item = event.getCurrentItem();
-            
-            if(item != null && item.getType() != Material.AIR)
-            {
-            	SmeltConfig config = (SmeltConfig)player.getCurrentQuest().getQuest().getConfig();
-            	config.CachedAmount = item.getAmount();
-            }
+			if(event.getSlotType() != InventoryType.SlotType.RESULT)
+				return;
+
+			if(!event.isShiftClick())
+				return;
+
+			ItemStack item = event.getCurrentItem();
+
+			if(item != null && item.getType() != Material.AIR)
+			{
+				SmeltConfig config = (SmeltConfig)player.getCurrentQuest().getQuest().getConfig();
+				config.CachedAmount = item.getAmount();
+			}
 		}
 	}
 }
