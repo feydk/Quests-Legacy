@@ -35,10 +35,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	public static PluginConfig Config;
 	
 	protected Quests quests;
-	Map<UUID, QuestPlayer> players;
-	
-	private Map<String, List<QuestReward>> milestone_rewards;
-	
+	Map<UUID, QuestPlayer> players;	
 	private QuestScheduler scheduler;
 	
 	private CraftQuest crafting_quest;
@@ -70,30 +67,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
         	economy = economyProvider.getProvider();
         else
         	throw new RuntimeException("Failed to setup economy.");
-                
-        milestone_rewards = new HashMap<String, List<QuestReward>>();
-        MemorySection rewards = (MemorySection)getConfig().get("rewards");
-        
-        for(String reward : rewards.getKeys(true))
-        {
-        	@SuppressWarnings("unchecked")
-			ArrayList<LinkedHashMap<String, String>> l = (ArrayList<LinkedHashMap<String, String>>)rewards.get(reward);
-        	
-        	ArrayList<QuestReward> list = new ArrayList<QuestReward>();
-        	
-        	for(int i = 0; i < l.size(); i++)
-        	{
-        		LinkedHashMap<String, String> map = (LinkedHashMap<String, String>)l.get(i);
-        		
-        		QuestReward r = new QuestReward();
-        		r.Text = map.get("text");
-        		r.Command = map.get("command");
-        		list.add(r);
-        	}
-        	
-        	milestone_rewards.put(reward, list);
-        }
-        
+                        
         crafting_quest = new CraftQuest(this);
         eating_quest = new EatQuest(this);
         taming_quest = new TameQuest(this);
@@ -192,16 +166,6 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		return true;
 	}
 	
-	void reloadPlayers()
-	{
-		players = new HashMap<UUID, QuestPlayer>();
-        
-        for(Player p : getServer().getOnlinePlayers())
-        {
-        	players.put(p.getUniqueId(), QuestPlayer.getByUUID(p.getUniqueId()));
-        }
-	}
-	
 	private void showAdminCommands(Player entity)
 	{		
 		String msg = " " + ChatColor.YELLOW + "Quests helper commands" + "\n";
@@ -267,8 +231,6 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Created)
 		{
 			player.getCurrentQuest().accept();
-			//player.reloadQuest();
-			//q = player.getQuest(false, false).PlayerQuest;
 		}
 		
 		double streak_bonus = 0;
@@ -507,9 +469,9 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 					msg += " " + ChatColor.GOLD + "Congratulations! You have completed all quests!\n";
 					
 					// Handle this special event! (set up in the config file)
-					if(milestone_rewards.containsKey("cycle_complete"))
+					if(PluginConfig.MILESTONE_REWARDS.containsKey("cycle_complete"))
 					{
-						List<QuestReward> rewards = milestone_rewards.get("cycle_complete");
+						List<QuestReward> rewards = PluginConfig.MILESTONE_REWARDS.get("cycle_complete");
 						
 						if(!rewards.isEmpty())
 						{
@@ -668,9 +630,9 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	{
 		String msg = "";
 
-		if(milestone_rewards.containsKey("streak_of_" + streak))
+		if(PluginConfig.MILESTONE_REWARDS.containsKey("streak_of_" + streak))
 		{
-			List<QuestReward> rewards = milestone_rewards.get("streak_of_" + streak);
+			List<QuestReward> rewards = PluginConfig.MILESTONE_REWARDS.get("streak_of_" + streak);
 			
 			if(!rewards.isEmpty())
 			{

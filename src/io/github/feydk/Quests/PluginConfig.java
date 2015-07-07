@@ -1,5 +1,12 @@
 package io.github.feydk.Quests;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class PluginConfig
@@ -18,6 +25,8 @@ public class PluginConfig
 	
 	public static boolean BROADCAST_COMPLETIONS;
 	
+	public static Map<String, List<QuestReward>> MILESTONE_REWARDS;
+	
 	public PluginConfig(FileConfiguration config)
 	{
 		DB_HOST = config.getString("mysql.host", "localhost");
@@ -33,5 +42,28 @@ public class PluginConfig
 		SERIES_ID = config.getInt("series", 1);
 		
 		BROADCAST_COMPLETIONS = config.getBoolean("broadcast_completions");
+		
+		MILESTONE_REWARDS = new HashMap<String, List<QuestReward>>();
+        MemorySection rewards = (MemorySection)config.get("rewards");
+        
+        for(String reward : rewards.getKeys(true))
+        {
+        	@SuppressWarnings("unchecked")
+			ArrayList<LinkedHashMap<String, String>> l = (ArrayList<LinkedHashMap<String, String>>)rewards.get(reward);
+        	
+        	ArrayList<QuestReward> list = new ArrayList<QuestReward>();
+        	
+        	for(int i = 0; i < l.size(); i++)
+        	{
+        		LinkedHashMap<String, String> map = (LinkedHashMap<String, String>)l.get(i);
+        		
+        		QuestReward r = new QuestReward();
+        		r.Text = map.get("text");
+        		r.Command = map.get("command");
+        		list.add(r);
+        	}
+        	
+        	MILESTONE_REWARDS.put(reward, list);
+        }
 	}
 }
