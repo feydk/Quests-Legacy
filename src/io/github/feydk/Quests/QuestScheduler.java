@@ -7,6 +7,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+// The scheduler simply checks the db for expired quests and handles them. See comments in code.
 public class QuestScheduler extends BukkitRunnable
 {
 	private QuestsPlugin plugin;
@@ -29,6 +30,7 @@ public class QuestScheduler extends BukkitRunnable
 	@Override
 	public void run()
 	{
+		// Get a list of players with expired quests.
 		List<QuestPlayer> players = QuestPlayer.getPlayersWithExpiredQuests();
 		
 		if(players.size() > 0)
@@ -37,14 +39,21 @@ public class QuestScheduler extends BukkitRunnable
 			{
 				OfflinePlayer entity = plugin.getServer().getOfflinePlayer(p.getModel().UUID);
 				
+				// If the quest status is Accepted, it means the player didn't complete it in time.
 				if(p.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Accepted)
 				{
 					int old_streak = p.getModel().Streak;
 					
+					// So therefore, reset the players streak.
 					p.resetStreak();
+					
+					// Set the quest as incomplete.
 					p.getCurrentQuest().setIncomplete();
+					
+					// Set the quest as processed.
 					p.getCurrentQuest().setProcessed();
 					
+					// And if player is online, send him a message, create a new quest and send him a notification about that new quest.
 					if(entity.isOnline())
 					{
 						String msg = " " + ChatColor.AQUA + "Aaawww! You didn't manage to complete your quest in time.";
@@ -63,10 +72,13 @@ public class QuestScheduler extends BukkitRunnable
 						plugin.notifyPlayerOfQuest((Player)entity, p.getCurrentQuest().getPlayerQuestModel().Status, 50);
 					}
 				}
+				// If the quest has any other status..
 				else
 				{
+					// Just set as processed.
 					p.getCurrentQuest().setProcessed();
 					
+					// And if player is online, create a new quest and send him a notification about it.
 					if(entity.isOnline())
 					{
 						p.giveRandomQuest();

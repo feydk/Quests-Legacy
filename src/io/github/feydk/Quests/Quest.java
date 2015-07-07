@@ -77,6 +77,8 @@ public class Quest
 		return config;
 	}
 	
+	// Each quest can have 0 to many special rewards to be given on completion. They are defined in the db like so:
+	// { "rewards": [{ "text": "Here's a diamond for you", "command": "give %player% diamond 1" }] }
 	public List<QuestReward> getRewards()
 	{
 		if(rewards == null)

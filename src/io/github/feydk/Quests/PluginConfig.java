@@ -11,21 +11,22 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class PluginConfig
 {
+	// Basic db stuff.
 	public static String DB_HOST;
 	public static String DB_PORT;
 	public static String DB_USER;
 	public static String DB_PASS;
 	public static String DB_NAME;
 	
-	public static double STREAK_MULTIPLIER;
-	public static double CYCLE_MULTIPLIER;
+	public static double STREAK_MULTIPLIER;								// Multiplier for calculating streak bonuses.
+	public static double CYCLE_MULTIPLIER;								// Multiplier for calculating cycle bonuses.
 	
-	public static int QUEST_LIFESPAN;
-	public static int SERIES_ID;
+	public static int QUEST_LIFESPAN;									// Defines the lifespan of a single quest, in minutes.
+	public static int SERIES_ID;										// What series of quests the plugin is currently set up to use.
 	
-	public static boolean BROADCAST_COMPLETIONS;
+	public static boolean BROADCAST_COMPLETIONS;						// Whether it should be broadcast when a player completes a quest.
 	
-	public static Map<String, List<QuestReward>> MILESTONE_REWARDS;
+	public static Map<String, List<QuestReward>> MILESTONE_REWARDS;		// List of milestone rewards.
 	
 	public PluginConfig(FileConfiguration config)
 	{
