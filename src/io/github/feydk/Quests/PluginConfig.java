@@ -44,7 +44,8 @@ public class PluginConfig
 		BROADCAST_COMPLETIONS = config.getBoolean("broadcast_completions");
 		
 		MILESTONE_REWARDS = new HashMap<String, List<QuestReward>>();
-        MemorySection rewards = (MemorySection)config.get("rewards");
+		
+		MemorySection rewards = (MemorySection)config.get("rewards");
         
 		for(String reward : rewards.getKeys(true))
 		{
