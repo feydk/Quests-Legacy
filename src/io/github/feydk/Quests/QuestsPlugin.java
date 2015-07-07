@@ -28,9 +28,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 // http://www.spigotmc.org/threads/symbols-in-motd.10092/
-// http://minecraftjson.com/
-// http://pastebin.com/AQEJDCpV smelting
-// http://pastebin.com/9MLryFs6 rockets
 
 public class QuestsPlugin extends JavaPlugin implements Listener
 {
@@ -605,7 +602,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	private void onPlayerJoin(PlayerJoinEvent event)
 	{
-		// TODO: take care of requirements like player rank, ontime or whatever.
+		// TODO: take care of requirements like player rank, ontime or whatever?
 		
 		if(!event.getPlayer().hasPermission("quests.quests"))
 		{
