@@ -1,9 +1,7 @@
 package io.github.feydk.Quests;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -14,7 +12,6 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -252,17 +249,17 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		String json = "[";
 		
 		// === Today's Quest ===
-		json += "{color: \"aqua\", text: \"=== \"}, {color: \"yellow\", text: \"✦\"}, {color: \"aqua\", text: \" Today's Quest ===\n\"}, ";
+		json += "{color: \"aqua\", text: \"=== \"}, {color: \"yellow\", text: \"?\"}, {color: \"aqua\", text: \" Today's Quest ===\n\"}, ";
 		
 		// Checkmark
 		if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Complete)
 		{
-			json += "{color: \"green\", text: \" ✔\", hoverEvent: {action: \"show_text\", value: \"You have completed\nthis quest.\"}}, ";
+			json += "{color: \"green\", text: \" ?\", hoverEvent: {action: \"show_text\", value: \"You have completed\nthis quest.\"}}, ";
 		}
 		// Unticked box
 		else if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Cancelled)
 		{
-			json += "{color: \"red\", text: \" ✖\", hoverEvent: {action: \"show_text\", value: \"You have cancelled\nthis quest.\"}}, ";
+			json += "{color: \"red\", text: \" ?\", hoverEvent: {action: \"show_text\", value: \"You have cancelled\nthis quest.\"}}, ";
 		}
 		
 		// Quest name
@@ -434,17 +431,17 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			String[] words = { "Nice", "Cool", "Sweet", "Awesome" };
 			Random ran = new Random();
 			
-			msg = ChatColor.AQUA + " Quest completed! " + words[ran.nextInt(words.length)] + " ツ\n";
+			msg = ChatColor.AQUA + " Quest completed! " + words[ran.nextInt(words.length)] + " ?\n";
 			
-			msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + "Reward: " + ChatColor.AQUA + economy.format(player.getCurrentQuest().getPlayerQuestModel().Reward) + "\n";
+			msg += " " + ChatColor.GREEN + "? " + ChatColor.DARK_AQUA + "Reward: " + ChatColor.AQUA + economy.format(player.getCurrentQuest().getPlayerQuestModel().Reward) + "\n";
 			
 			if(player.getCurrentQuest().getPlayerQuestModel().StreakBonus > 0 || player.getCurrentQuest().getPlayerQuestModel().CycleBonus > 0)
 			{
 				if(player.getCurrentQuest().getPlayerQuestModel().StreakBonus > 0)
-					msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + "Streak bonus: " + ChatColor.AQUA + economy.format(player.getCurrentQuest().getPlayerQuestModel().StreakBonus) + "\n";
+					msg += " " + ChatColor.GREEN + "? " + ChatColor.DARK_AQUA + "Streak bonus: " + ChatColor.AQUA + economy.format(player.getCurrentQuest().getPlayerQuestModel().StreakBonus) + "\n";
 				
 				if(player.getCurrentQuest().getPlayerQuestModel().CycleBonus > 0)
-					msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + "Cycle bonus: " + ChatColor.AQUA + economy.format(player.getCurrentQuest().getPlayerQuestModel().CycleBonus) + "\n";
+					msg += " " + ChatColor.GREEN + "? " + ChatColor.DARK_AQUA + "Cycle bonus: " + ChatColor.AQUA + economy.format(player.getCurrentQuest().getPlayerQuestModel().CycleBonus) + "\n";
 			}
 			
 			// Handle streak rewards (set up in the config file).
@@ -456,7 +453,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				for(QuestReward r : player.getCurrentQuest().getQuest().getRewards())
 				{
 					getServer().dispatchCommand(getServer().getConsoleSender(), r.Command.replaceAll("%player%", entity.getName()));
-					msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + "Special reward: " + ChatColor.AQUA + r.Text + "\n";
+					msg += " " + ChatColor.GREEN + "? " + ChatColor.DARK_AQUA + "Special reward: " + ChatColor.AQUA + r.Text + "\n";
 				}
 			}
 									
@@ -478,7 +475,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 							for(QuestReward reward : rewards)
 							{
 								getServer().dispatchCommand(getServer().getConsoleSender(), reward.Command.replaceAll("%player%", entity.getName()));
-								msg += " " + ChatColor.GOLD + "✦ " + reward.Text.replaceAll("%happy%", "ツ") + "\n";
+								msg += " " + ChatColor.GOLD + "? " + reward.Text.replaceAll("%happy%", "?") + "\n";
 							}
 						}
 					}
@@ -487,7 +484,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				}
 				else
 				{
-					msg += " " + ChatColor.YELLOW + "✦ " + ChatColor.DARK_AQUA + "You have moved up to Tier " + ChatColor.AQUA + player.getModel().Tier + "\n";
+					msg += " " + ChatColor.YELLOW + "? " + ChatColor.DARK_AQUA + "You have moved up to Tier " + ChatColor.AQUA + player.getModel().Tier + "\n";
 				}
 				
 				summonRocket(entity);
@@ -639,7 +636,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				for(QuestReward reward : rewards)
 				{
 					getServer().dispatchCommand(getServer().getConsoleSender(), reward.Command.replaceAll("%player%", entity.getName()));
-					msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + reward.Text.replaceAll("%happy%", "ツ") + "\n";
+					msg += " " + ChatColor.GREEN + "? " + ChatColor.DARK_AQUA + reward.Text.replaceAll("%happy%", "?") + "\n";
 				}
 			}
 		}
@@ -692,16 +689,16 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		
 	private boolean sendJsonMessage(Player player, String json)
 	{
-        if(player == null)
-        	return false;
-        
-        final CommandSender console = getServer().getConsoleSender();
-        final String command = "minecraft:tellraw " + player.getName() + " " + json;
-
-        getServer().dispatchCommand(console, command);
-        
-        return true;
-    }
+		if(player == null)
+	    	return false;
+	    
+	    final CommandSender console = getServer().getConsoleSender();
+	    final String command = "minecraft:tellraw " + player.getName() + " " + json;
+	
+	    getServer().dispatchCommand(console, command);
+	    
+	    return true;
+	}
 	
 	@SuppressWarnings("deprecation")
 	private boolean broadcastJsonMessage(String json)
@@ -714,9 +711,9 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 
 			getServer().dispatchCommand(console, command);
 		}
-        
-        return true;
-    }
+
+		return true;
+	}
 	
 	private boolean giveMoney(QuestPlayer player, double amount)
 	{
@@ -733,18 +730,18 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	private void summonRocket(Player entity)
 	{
 		FireworkEffect.Builder builder = FireworkEffect.builder();
-        builder.with(FireworkEffect.Type.STAR);
-        builder.withColor(Color.AQUA);
-        builder.withFlicker();
-        builder.withTrail();
+		builder.with(FireworkEffect.Type.STAR);
+		builder.withColor(Color.AQUA);
+		builder.withFlicker();
+		builder.withTrail();
 		
 		Location loc = entity.getEyeLocation();
-        Firework firework = (Firework)loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
-        FireworkMeta meta = firework.getFireworkMeta();
-        meta.addEffects(builder.build());
-        int power = entity.isSneaking() ? 0 : 1;
-        meta.setPower(power);
-        firework.setFireworkMeta(meta);
+		Firework firework = (Firework)loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
+		FireworkMeta meta = firework.getFireworkMeta();
+		meta.addEffects(builder.build());
+		int power = entity.isSneaking() ? 0 : 1;
+		meta.setPower(power);
+		firework.setFireworkMeta(meta);
 	}
 	
 	@SuppressWarnings("unused")
