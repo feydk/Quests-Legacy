@@ -46,6 +46,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	private KillQuest killing_quest;
 	private TradeQuest trading_quest;
 	private GrowQuest growing_quest;
+	private ThrowEggQuest throw_egg_quest;
 	
 	@Override
 	public void onEnable()
@@ -76,6 +77,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		killing_quest = new KillQuest(this);
 		trading_quest = new TradeQuest(this);
 		growing_quest = new GrowQuest(this);
+		throw_egg_quest = new ThrowEggQuest(this);
 		
 		// Listen for quest specific events.
 		getServer().getPluginManager().registerEvents(crafting_quest, this);
@@ -89,6 +91,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		getServer().getPluginManager().registerEvents(killing_quest, this);
 		getServer().getPluginManager().registerEvents(trading_quest, this);
 		getServer().getPluginManager().registerEvents(growing_quest, this);
+		getServer().getPluginManager().registerEvents(throw_egg_quest, this);
 		
 		// General events.
 		getServer().getPluginManager().registerEvents(this, this);
@@ -249,17 +252,17 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		String json = "[";
 		
 		// === Today's Quest ===
-		json += "{color: \"aqua\", text: \"=== \"}, {color: \"yellow\", text: \"?\"}, {color: \"aqua\", text: \" Today's Quest ===\n\"}, ";
+		json += "{color: \"aqua\", text: \"=== \"}, {color: \"yellow\", text: \"✦\"}, {color: \"aqua\", text: \" Today's Quest ===\n\"}, ";
 		
 		// Checkmark
 		if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Complete)
 		{
-			json += "{color: \"green\", text: \" ?\", hoverEvent: {action: \"show_text\", value: \"You have completed\nthis quest.\"}}, ";
+			json += "{color: \"green\", text: \" ✔\", hoverEvent: {action: \"show_text\", value: \"You have completed\nthis quest.\"}}, ";
 		}
 		// Unticked box
 		else if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Cancelled)
 		{
-			json += "{color: \"red\", text: \" ?\", hoverEvent: {action: \"show_text\", value: \"You have cancelled\nthis quest.\"}}, ";
+			json += "{color: \"red\", text: \" ✖\", hoverEvent: {action: \"show_text\", value: \"You have cancelled\nthis quest.\"}}, ";
 		}
 		
 		// Quest name
@@ -431,17 +434,17 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			String[] words = { "Nice", "Cool", "Sweet", "Awesome" };
 			Random ran = new Random();
 			
-			msg = ChatColor.AQUA + " Quest completed! " + words[ran.nextInt(words.length)] + " ?\n";
+			msg = ChatColor.AQUA + " Quest completed! " + words[ran.nextInt(words.length)] + " ツ\n";
 			
-			msg += " " + ChatColor.GREEN + "? " + ChatColor.DARK_AQUA + "Reward: " + ChatColor.AQUA + economy.format(player.getCurrentQuest().getPlayerQuestModel().Reward) + "\n";
+			msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + "Reward: " + ChatColor.AQUA + economy.format(player.getCurrentQuest().getPlayerQuestModel().Reward) + "\n";
 			
 			if(player.getCurrentQuest().getPlayerQuestModel().StreakBonus > 0 || player.getCurrentQuest().getPlayerQuestModel().CycleBonus > 0)
 			{
 				if(player.getCurrentQuest().getPlayerQuestModel().StreakBonus > 0)
-					msg += " " + ChatColor.GREEN + "? " + ChatColor.DARK_AQUA + "Streak bonus: " + ChatColor.AQUA + economy.format(player.getCurrentQuest().getPlayerQuestModel().StreakBonus) + "\n";
+					msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + "Streak bonus: " + ChatColor.AQUA + economy.format(player.getCurrentQuest().getPlayerQuestModel().StreakBonus) + "\n";
 				
 				if(player.getCurrentQuest().getPlayerQuestModel().CycleBonus > 0)
-					msg += " " + ChatColor.GREEN + "? " + ChatColor.DARK_AQUA + "Cycle bonus: " + ChatColor.AQUA + economy.format(player.getCurrentQuest().getPlayerQuestModel().CycleBonus) + "\n";
+					msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + "Cycle bonus: " + ChatColor.AQUA + economy.format(player.getCurrentQuest().getPlayerQuestModel().CycleBonus) + "\n";
 			}
 			
 			// Handle streak rewards (set up in the config file).
@@ -453,7 +456,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				for(QuestReward r : player.getCurrentQuest().getQuest().getRewards())
 				{
 					getServer().dispatchCommand(getServer().getConsoleSender(), r.Command.replaceAll("%player%", entity.getName()));
-					msg += " " + ChatColor.GREEN + "? " + ChatColor.DARK_AQUA + "Special reward: " + ChatColor.AQUA + r.Text + "\n";
+					msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + "Special reward: " + ChatColor.AQUA + r.Text + "\n";
 				}
 			}
 									
@@ -475,7 +478,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 							for(QuestReward reward : rewards)
 							{
 								getServer().dispatchCommand(getServer().getConsoleSender(), reward.Command.replaceAll("%player%", entity.getName()));
-								msg += " " + ChatColor.GOLD + "? " + reward.Text.replaceAll("%happy%", "?") + "\n";
+								msg += " " + ChatColor.GOLD + "✦ " + reward.Text.replaceAll("%happy%", "ツ") + "\n";
 							}
 						}
 					}
@@ -484,7 +487,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				}
 				else
 				{
-					msg += " " + ChatColor.YELLOW + "? " + ChatColor.DARK_AQUA + "You have moved up to Tier " + ChatColor.AQUA + player.getModel().Tier + "\n";
+					msg += " " + ChatColor.YELLOW + "✦ " + ChatColor.DARK_AQUA + "You have moved up to Tier " + ChatColor.AQUA + player.getModel().Tier + "\n";
 				}
 				
 				summonRocket(entity);
@@ -608,6 +611,14 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			// And give him a new quest.
 			player.giveRandomQuest();
 		}
+		else
+		{
+			// If last/current quest is processed, create a new one.
+			if(player.getCurrentQuest().getPlayerQuestModel().Processed == 1)
+			{
+				player.giveRandomQuest();
+			}
+		}
 		
 		notifyPlayerOfQuest(entity, player.getCurrentQuest().getPlayerQuestModel().Status, 160);
 	}
@@ -636,7 +647,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				for(QuestReward reward : rewards)
 				{
 					getServer().dispatchCommand(getServer().getConsoleSender(), reward.Command.replaceAll("%player%", entity.getName()));
-					msg += " " + ChatColor.GREEN + "? " + ChatColor.DARK_AQUA + reward.Text.replaceAll("%happy%", "?") + "\n";
+					msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + reward.Text.replaceAll("%happy%", "ツ") + "\n";
 				}
 			}
 		}

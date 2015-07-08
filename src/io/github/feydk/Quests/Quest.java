@@ -64,6 +64,9 @@ public class Quest
 				case Tame:
 					c = new TameConfig();
 					break;
+				case ThrowEgg:
+					c = new ThrowEggConfig();
+					break;
 				// Trading has no special config.
 				default:
 					c = new BaseConfig();
@@ -135,6 +138,8 @@ public class Quest
 				return QuestType.Smelt;
 			case "tame":
 				return QuestType.Tame;
+			case "throw_egg":
+				return QuestType.ThrowEgg;
 			case "trade":
 				return QuestType.Trade;
 		}

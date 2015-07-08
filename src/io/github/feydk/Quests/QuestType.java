@@ -12,6 +12,7 @@ public enum QuestType
 	Mine,
 	Smelt,
 	Tame,
+	ThrowEgg,
 	Trade,
 	Unknown
 }

@@ -42,3 +42,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.class
+.classpath
+*.launch
+.project
+dist/Quests.jar
+.settings/org.eclipse.core.resources.prefs
+Quests.jar
+build.xml

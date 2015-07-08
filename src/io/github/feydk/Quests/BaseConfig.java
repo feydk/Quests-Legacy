@@ -274,5 +274,14 @@ public class BaseConfig
 				}
 			}
 		}
+		
+		// Throw egg.
+		if(this instanceof ThrowEggConfig)
+		{
+			if(o.get("hatch") != null)
+				((ThrowEggConfig)this).Hatch = Boolean.parseBoolean(o.get("hatch").toString());
+			else if(o.get("throw") != null)
+				((ThrowEggConfig)this).Throw = Boolean.parseBoolean(o.get("throw").toString());
+		}
 	}
 }
