@@ -13,6 +13,13 @@ import org.bukkit.event.entity.EntityDeathEvent;
 // Killing quests can be any of the following:
 // 1. Kill a certain type of mob.
 // 2. Kill a certain type of mob with a certain weapon (which doesn't have to be a weapon per se, can by any held item).
+
+/*
+ * Config examples:
+ * Kill a skeleton: { "entities": [{ "entity": "SKELETON" }] }
+ * Kill a zombie with a diamond: { "entities": [{ "entity": "ZOMBIE" }], "materials": [{ "id": 264 }] }
+ * Kill a zombie, creeper or skeleton: { "entities": [{ "entity": "ZOMBIE" }, { "entity": "CREEPER" }, { "entity": "SKELETON" }] }
+ */
 public class KillQuest extends BaseQuest implements Listener
 {
 	KillQuest(QuestsPlugin plugin)

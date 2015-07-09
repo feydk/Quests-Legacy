@@ -12,6 +12,12 @@ import org.bukkit.event.inventory.CraftItemEvent;
 // Special notice about crafting quests:
 // The API has no way of telling us how many items where actually crafted, only what was crafted.
 // So quests must always only require ONE item to be crafted. Which of course makes them sort of boring, but.. ¯\_(ツ)_/¯
+
+/*
+ * Config examples:
+ * Craft a bed: { "materials": [{ "id": 355 }] }
+ * Craft a jukebox: { "materials": [{ "id": 84 }] }
+ */
 public class CraftQuest extends BaseQuest implements Listener
 {
 	CraftQuest(QuestsPlugin plugin)

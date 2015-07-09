@@ -67,23 +67,7 @@ public class Quests
 		
 		return tiers;
 	}
-	
-	public double calcStreakBonus(QuestPlayer player)
-	{
-		if(player.getModel().Streak == 0)
-			return 0;
 		
-		return (double)player.getCurrentQuest().getQuestModel().Reward * ((player.getModel().Streak + 1) * PluginConfig.STREAK_MULTIPLIER);
-	}
-	
-	public double calcCycleBonus(QuestPlayer player)
-	{
-		if(player.getModel().Cycle == 1)
-			return 0;
-		
-		return (double)player.getCurrentQuest().getQuestModel().Reward * ((player.getModel().Cycle - 1) * PluginConfig.CYCLE_MULTIPLIER);
-	}
-	
 	public List<PlayerQuest> getExpiredQuests()
 	{
 		 List<PlayerQuestModel> models = PlayerQuestModel.loadExpiredQuests();

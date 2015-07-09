@@ -7,6 +7,8 @@ mysql:
 series: 1
 streak_multiplier: 0.025
 cycle_multiplier: 0.05
+streak_bonus_cap: 100
+streak_bonus_increment: 1
 quest_lifespan: 5
 broadcast_completions: true
 rewards:

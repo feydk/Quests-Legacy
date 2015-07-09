@@ -12,6 +12,12 @@ import org.bukkit.event.player.PlayerEggThrowEvent;
 // Can be any of the following:
 // 1. Throw a certain amount of eggs.
 // 2. Hatch a certain amount of chickens from thrown eggs.
+
+/*
+ * Config examples:
+ * Throw egg: { "throw": true }
+ * Hatch chicken: { "hatch": true }
+ */
 public class ThrowEggQuest extends BaseQuest implements Listener
 {
 	ThrowEggQuest(QuestsPlugin plugin)
@@ -45,14 +51,14 @@ public class ThrowEggQuest extends BaseQuest implements Listener
 				return;
 			
 			ThrowEggConfig config = (ThrowEggConfig)player.getCurrentQuest().getQuest().getConfig();
-			
+
 			if(config.Throw)
 			{
 				plugin.updateProgress(player, p, 1);
 			}
 			else if(config.Hatch)
 			{
-				if(event.getHatchingType() == EntityType.CHICKEN)
+				if(event.getHatchingType() == EntityType.CHICKEN && event.getNumHatches() > 0)
 					plugin.updateProgress(player, p, event.getNumHatches());
 			}
 		}

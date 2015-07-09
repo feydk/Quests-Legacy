@@ -20,6 +20,8 @@ public class PluginConfig
 	
 	public static double STREAK_MULTIPLIER;								// Multiplier for calculating streak bonuses.
 	public static double CYCLE_MULTIPLIER;								// Multiplier for calculating cycle bonuses.
+	public static double STREAK_BONUS_CAP;								// Cap the streak bonus percentage at this value.
+	public static double STREAK_BONUS_INCREMENT;						// Increment streak bonus percentage by this value for every "streak point".
 	
 	public static int QUEST_LIFESPAN;									// Defines the lifespan of a single quest, in minutes.
 	public static int SERIES_ID;										// What series of quests the plugin is currently set up to use.
@@ -38,6 +40,9 @@ public class PluginConfig
 		
 		STREAK_MULTIPLIER = config.getDouble("streak_multiplier", .15);
 		CYCLE_MULTIPLIER = config.getDouble("cycle_multiplier", .15);
+		
+		STREAK_BONUS_CAP = config.getDouble("streak_bonus_cap", 100);
+		STREAK_BONUS_INCREMENT = config.getDouble("streak_bonus_increment", 1);
 		
 		QUEST_LIFESPAN = config.getInt("quest_lifespan", 1440);
 		SERIES_ID = config.getInt("series", 1);

@@ -8,6 +8,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 
+/*
+ * Config examples:
+ * Currently none, so just put in { }
+ */
 public class TradeQuest extends BaseQuest implements Listener
 {
 	TradeQuest(QuestsPlugin plugin)

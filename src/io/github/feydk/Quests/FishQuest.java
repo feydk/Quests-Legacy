@@ -10,6 +10,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 
+/*
+ * Config examples:
+ * Catch a fish: { "items": [{ "id": 349 }] }
+ * Catch a salmon: { "items": [{ "id": "349:1" }] }
+ * Catch a salmon OR a clownfish: { "items": [{ "id": "349:1" }, { "id": "349:2" }] }
+ */
 public class FishQuest extends BaseQuest implements Listener
 {
 	FishQuest(QuestsPlugin plugin)

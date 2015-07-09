@@ -19,6 +19,15 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 // 4. Enchant a specific item with a specific enchantment at a specific level.
 // 5. Enchant any item with a specific level.
 // 6. Spend a specific amount of xp, no matter on what.
+
+/*
+ * Config examples:
+ * Enchant a stone pick: { "materials": [{ "id": 274 }] }
+ * Enchant a stone pick with silk touch: { "materials": [{ "id": 274 }], "enchantment": { "name": "SILK_TOUCH" } }
+ * Enchant a stone pick with unbreaking 2: { "materials": [{ "id": 274 }], "enchantment": { "name": "UNBREAKING", "level": 2 } }
+ * Enchant any item with any level 2: { "enchantment": { "level": 2 } }
+ * Spend 20 xp: { "enchantment": { "xp": true } } (the "amount" column should have the value 20)
+ */
 public class EnchantQuest extends BaseQuest implements Listener
 {
 	EnchantQuest(QuestsPlugin plugin)

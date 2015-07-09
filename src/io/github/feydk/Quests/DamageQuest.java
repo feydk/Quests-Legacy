@@ -15,6 +15,12 @@ import org.bukkit.permissions.Permissible;
 // Take damage quests can be any of the following:
 // 1. Take a certain amount of damage (hearts), no matter how.
 // 2. Take a certain amount of damage (hearts) from a certain type of mob.
+
+/*
+ * Config examples:
+ * Take damage, no matter how: { } (empty config, since the "amount" column in the "quest_quests" table will contain the amount of hearts)
+ * Take damage from a zombie: { "entities": [{ "entity": "ZOMBIE" }] } (again, "amount" determines the amount of hearts)
+ */
 public class DamageQuest extends BaseQuest implements Listener
 {
 	DamageQuest(QuestsPlugin plugin)

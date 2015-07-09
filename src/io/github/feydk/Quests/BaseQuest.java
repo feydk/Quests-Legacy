@@ -5,6 +5,14 @@ import java.util.List;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 
+/*
+ * Config examples of the common, generic requirements. These can be used in all quests:
+ * { <quest specific params>, "when_raining": true, "at_night": true, "biomes": [{ "biome": "BEACH" }, { "biome": "DESERT" }] }
+ * 
+ * Example: catch a fish in a desert at night
+ * { "items": [{ "id": 349 }], "at_night": true, "biomes": [{ "biome": "DESERT" }] }
+ */
+
 public class BaseQuest
 {
 	protected QuestsPlugin plugin;

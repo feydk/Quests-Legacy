@@ -11,6 +11,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
+/*
+ * Config examples:
+ * Eat a carrot: { "materials": [{ "id": 391 }] }
+ * This quest type doesn't support data ids (for instance cooked salmon: 350:1)
+ */
 public class EatQuest extends BaseQuest implements Listener
 {
 	EatQuest(QuestsPlugin plugin)

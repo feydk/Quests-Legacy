@@ -243,8 +243,8 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		}
 		else
 		{
-			streak_bonus = quests.calcStreakBonus(player);
-			cycle_bonus = quests.calcCycleBonus(player);
+			streak_bonus = player.calcStreakBonus();
+			cycle_bonus = player.calcCycleBonus();
 		}
 		
 		double total_reward = player.getCurrentQuest().getQuestModel().Reward + streak_bonus + cycle_bonus;
@@ -423,8 +423,8 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		
 		String msg = "";
 		
-		player.getCurrentQuest().getPlayerQuestModel().StreakBonus = quests.calcStreakBonus(player);
-		player.getCurrentQuest().getPlayerQuestModel().CycleBonus = quests.calcCycleBonus(player);
+		player.getCurrentQuest().getPlayerQuestModel().StreakBonus = player.calcStreakBonus();
+		player.getCurrentQuest().getPlayerQuestModel().CycleBonus = player.calcCycleBonus();
 		player.getCurrentQuest().getPlayerQuestModel().Reward = player.getCurrentQuest().getQuestModel().Reward;
 		
 		if(player.getCurrentQuest().complete())

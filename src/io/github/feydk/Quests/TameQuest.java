@@ -10,6 +10,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.permissions.Permissible;
 
+/*
+ * Config examples:
+ * Tame a wolf: { "entities": [{ "entity": "WOLF" }] }
+ */
+
 public class TameQuest extends BaseQuest implements Listener
 {
 	TameQuest(QuestsPlugin plugin)

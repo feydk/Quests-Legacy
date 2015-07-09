@@ -13,6 +13,13 @@ import org.bukkit.event.world.StructureGrowEvent;
 // 1. Grow an amount of trees.
 // 2. Grow an amount of a certain tree type.
 // AVOID big jungle trees and big spruce trees, as the event is fired even if a tree isn't grown. Dark oaks seem to work fine.
+
+/*
+ * Config examples:
+ * Grow a birch tree: { "treetypes": [{ "type": "BIRCH" }] }
+ * Grow any tree: {  } (note the above comment hoever, so a player could complete this just by trying to grow a 2x2 tree)
+ * Grow a birch tree or a small jungle tree: { "treetypes": [{ "type": "BIRCH" }, { "type": "SMALL_JUNGLE" }] }
+ */
 public class GrowQuest extends BaseQuest implements Listener
 {
 	GrowQuest(QuestsPlugin plugin)

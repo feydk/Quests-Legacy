@@ -12,6 +12,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
+/*
+ * Config examples:
+ * Smelt sand into glass: { "materials": [{ "id": 20 }] } (we only specify the resulting material, which is 20 = glass)
+ */
+
 public class SmeltQuest extends BaseQuest implements Listener
 {
 	SmeltQuest(QuestsPlugin plugin)

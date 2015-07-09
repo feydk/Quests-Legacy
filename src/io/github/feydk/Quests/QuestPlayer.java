@@ -189,6 +189,32 @@ public class QuestPlayer
 		return false;
 	}
 	
+	public double calcStreakBonus()
+	{
+		if(model.Streak == 0)
+			return 0;
+		
+		double multiplier = 0;
+		int streak = model.Streak + 1;
+		
+		if(streak >= PluginConfig.STREAK_BONUS_CAP)
+			multiplier = PluginConfig.STREAK_BONUS_CAP;
+		else
+			multiplier = PluginConfig.STREAK_BONUS_INCREMENT * streak;
+		
+		return (multiplier / 100.0) * getCurrentQuest().getQuestModel().Reward;
+		
+		//return (double)player.getCurrentQuest().getQuestModel().Reward * ((player.getModel().Streak + 1) * PluginConfig.STREAK_MULTIPLIER);
+	}
+	
+	public double calcCycleBonus()
+	{
+		if(model.Cycle == 1)
+			return 0;
+		
+		return (double)getCurrentQuest().getQuestModel().Reward * ((model.Cycle - 1) * PluginConfig.CYCLE_MULTIPLIER);
+	}
+	
 	// Move last active quest one day back, so a new one can be made immediately.
 	/*public boolean switchQuestDate()
 	{

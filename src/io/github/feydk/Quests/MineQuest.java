@@ -14,6 +14,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
+/*
+ * Config examples:
+ * Break a block of dirt: { "items": [{ "id": "3:0" }] }
+ * Break any type of wood log: { "materials": [{ "id": 17 }, { "id": 162 }] }
+ * Break 5 blocks of coal ore: { "materials": [{ "id": 16 }] }
+ * 
+ * Use items for blocks with data ids.
+ */
+
 public class MineQuest extends BaseQuest implements Listener
 {
 	MineQuest(QuestsPlugin plugin)
