@@ -180,7 +180,7 @@ public class QuestPlayer
 		if(model.Tier > total_count)
 		{
 			model.Tier = 1;
-			model.Streak = 0;
+			//model.Streak = 0;
 			model.Cycle++;
 			
 			return model.update();
