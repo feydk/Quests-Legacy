@@ -9,4 +9,11 @@ import org.bukkit.inventory.ItemStack;
 public class FishConfig extends BaseConfig
 {
 	public List<ItemStack> Items;
+	
+	public void parse(String json)
+	{
+		super.parse(json);
+		
+		Items = parseItems(json);
+	}
 }

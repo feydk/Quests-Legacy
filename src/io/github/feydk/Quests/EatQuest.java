@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.inventory.ItemStack;
 
 /*
  * Config examples:
@@ -50,9 +51,10 @@ public class EatQuest extends BaseQuest implements Listener
 			
 			EatConfig config = (EatConfig)player.getCurrentQuest().getQuest().getConfig();
 			
-			Material eaten = event.getItem().getType();
+			ItemStack eaten = event.getItem().clone();
+			eaten.setAmount(1);
 			
-			if(config.Materials != null && config.Materials.contains(eaten))
+			if(config.Items != null && config.Items.contains(eaten))
 			{
 				plugin.updateProgress(player, p, 1);
 			}
@@ -88,8 +90,9 @@ public class EatQuest extends BaseQuest implements Listener
 					return;
 				
 				EatConfig config = (EatConfig)player.getCurrentQuest().getQuest().getConfig();
+				ItemStack cake = new ItemStack(Material.CAKE_BLOCK);
 				
-				if(config.Materials != null && config.Materials.contains(Material.CAKE_BLOCK))
+				if(config.Items != null && config.Items.contains(cake))
 					plugin.updateProgress(player, p, 1);
 			}
 		}

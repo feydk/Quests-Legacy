@@ -64,11 +64,19 @@ public class MineQuest extends BaseQuest implements Listener
 			
 			MineConfig config = (MineConfig)player.getCurrentQuest().getQuest().getConfig();
 			
-			// Checking both blocks and drops / materials and items.
-			Collection<ItemStack> mined_item = event.getBlock().getDrops();
-			Material mined_material = event.getBlock().getType();
-
-			if((config.Materials != null && config.Materials.contains(mined_material)) || (config.Items != null && config.Items.contains(mined_item)))
+			Collection<ItemStack> dropped_items = event.getBlock().getDrops();
+			ItemStack mined_item = new ItemStack(event.getBlock().getType());
+			
+			// Temp fix for redstone ore.
+			if(event.getBlock().getType() == Material.GLOWING_REDSTONE_ORE)
+				mined_item = new ItemStack(Material.REDSTONE_ORE);
+			
+			//Material.GLOWING_REDSTONE_ORE
+			///System.out.println(dropped_items);
+			//System.out.println(mined_item);
+			//System.out.println(config.Items);
+						
+			if(config.Items != null && ((dropped_items.size() > 0 && config.Items.containsAll(dropped_items)) || config.Items.contains(mined_item)))
 				plugin.updateProgress(player, p, 1);
 		}
 	}

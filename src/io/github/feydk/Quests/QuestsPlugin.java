@@ -529,13 +529,15 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	{		
 		QuestPlayer player = players.get(entity.getUniqueId());
 		
-		if(player.getCurrentQuest().getPlayerQuestModel().Status != QuestStatus.Complete)
+		if(player.getCurrentQuest().getPlayerQuestModel() != null && player.getCurrentQuest().getPlayerQuestModel().Status != QuestStatus.Complete)
 		{
 			entity.sendMessage(ChatColor.RED + "You already have an active quest.");
 			return;
 		}
 		
-		player.getCurrentQuest().setProcessed();
+		if(player.getCurrentQuest().getPlayerQuestModel() != null)
+			player.getCurrentQuest().setProcessed();
+		
 		player.giveRandomQuest();
 		
 		notifyPlayerOfQuest(entity, player.getCurrentQuest().getPlayerQuestModel().Status, 0);
@@ -591,6 +593,12 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		}
 		
 		players.put(entity.getUniqueId(), player);
+		
+		// This can happen if we reset a player, so might as well handle it.
+		if(player.getCurrentQuest().getPlayerQuestModel() == null)
+		{
+			player.giveRandomQuest();
+		}
 		
 		// Let the player know if his last (current) quest wasn't completed before it expired.
 		if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Incomplete)

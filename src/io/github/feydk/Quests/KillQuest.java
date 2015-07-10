@@ -2,13 +2,13 @@ package io.github.feydk.Quests;
 
 import io.github.feydk.Quests.Config.KillConfig;
 
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 // Killing quests can be any of the following:
 // 1. Kill a certain type of mob.
@@ -67,11 +67,11 @@ public class KillQuest extends BaseQuest implements Listener
 				boolean ok = true;
 				
 				// Scenario 2.
-				if(config.Materials != null && config.Materials.size() > 0)
+				if(config.Items != null && config.Items.size() > 0)
 				{
-					Material weapon = p.getItemInHand().getType();
+					ItemStack weapon = p.getItemInHand();
 					
-					ok = config.Materials.contains(weapon);
+					ok = config.Items.contains(weapon);
 				}
 				
 				if(ok)

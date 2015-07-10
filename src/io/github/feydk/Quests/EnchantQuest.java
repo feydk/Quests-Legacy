@@ -4,13 +4,13 @@ import io.github.feydk.Quests.Config.EnchantConfig;
 
 import java.util.Map.Entry;
 
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.inventory.ItemStack;
 
 // Enchanting quests can be any of the following:
 // 1. Enchant a specific item.
@@ -64,12 +64,12 @@ public class EnchantQuest extends BaseQuest implements Listener
 			
 			EnchantConfig config = (EnchantConfig)player.getCurrentQuest().getQuest().getConfig();
 			
-			Material item = event.getItem().getType();
+			ItemStack item = event.getItem();
 			
-			if(config.Materials != null && config.Materials.size() > 0)
+			if(config.Items != null && config.Items.size() > 0)
 			{
 				// Possible scenario 1 + 2 + 3 + 4.
-				if(config.Materials.contains(item))
+				if(config.Items.contains(item))
 				{
 					// Scenario 1.
 					if(config.Enchantment == null && config.Level == 0)

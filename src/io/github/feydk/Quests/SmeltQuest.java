@@ -51,9 +51,9 @@ public class SmeltQuest extends BaseQuest implements Listener
 			
 			SmeltConfig config = (SmeltConfig)player.getCurrentQuest().getQuest().getConfig();
 								
-			Material smelted_item = event.getItemType();
+			ItemStack smelted_item = new ItemStack(event.getItemType());
 						
-			if(config.Materials != null && config.Materials.contains(smelted_item))
+			if(config.Items != null && config.Items.contains(smelted_item))
 			{
 				// This event is sometimes called twice, so take care of that.
 				int cachedAmount = config.CachedAmount;
