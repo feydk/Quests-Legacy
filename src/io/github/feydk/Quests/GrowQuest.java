@@ -2,12 +2,16 @@ package io.github.feydk.Quests;
 
 import io.github.feydk.Quests.Config.GrowConfig;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.TreeType;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.plugin.Plugin;
 
 // Growing quests can be any of the following:
 // 1. Grow an amount of trees.
@@ -28,7 +32,7 @@ public class GrowQuest extends BaseQuest implements Listener
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-	private void onStructureGrow(StructureGrowEvent event)
+	private void onStructureGrow(final StructureGrowEvent event)
 	{
 		if(event.getPlayer() == null)
 			return;
@@ -44,8 +48,8 @@ public class GrowQuest extends BaseQuest implements Listener
 		if(!(event.getPlayer() instanceof Player))
 			return;
 		
-		Player p = event.getPlayer();
-		QuestPlayer player = plugin.players.get(p.getUniqueId());
+		final Player p = event.getPlayer();
+		final QuestPlayer player = plugin.players.get(p.getUniqueId());
 		
 		if(player.getCurrentQuest() == null)
 		{
@@ -61,21 +65,30 @@ public class GrowQuest extends BaseQuest implements Listener
 			if(!checkGenericRequirements(player.getCurrentQuest().getQuest().getConfig(), p))
 				return;
 			
-			GrowConfig config = (GrowConfig)player.getCurrentQuest().getQuest().getConfig();
+			final GrowConfig config = (GrowConfig)player.getCurrentQuest().getQuest().getConfig();
 			
-			if(config.TreeTypes != null && config.TreeTypes.size() > 0)
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 			{
-				TreeType grown = event.getSpecies();
-						
-				if(config.TreeTypes.contains(grown))
+				public void run()
 				{
-					plugin.updateProgress(player, p, 1);
+					if(event.getWorld().getBlockAt(event.getLocation()).getType() != Material.SAPLING)
+					{
+						if(config.TreeTypes != null && config.TreeTypes.size() > 0)
+						{
+							TreeType grown = event.getSpecies();
+							
+							if(config.TreeTypes.contains(grown))
+							{
+								plugin.updateProgress(player, p, 1);
+							}
+						}
+						else
+						{
+							plugin.updateProgress(player, p, 1);
+						}
+					}
 				}
-			}
-			else
-			{
-				plugin.updateProgress(player, p, 1);
-			}
+			}, 1);
 		}
 	}
 }
