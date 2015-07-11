@@ -18,7 +18,6 @@ public class PluginConfig
 	public static String DB_PASS;
 	public static String DB_NAME;
 	
-	public static double STREAK_MULTIPLIER;								// Multiplier for calculating streak bonuses.
 	public static double CYCLE_MULTIPLIER;								// Multiplier for calculating cycle bonuses.
 	public static double STREAK_BONUS_CAP;								// Cap the streak bonus percentage at this value.
 	public static double STREAK_BONUS_INCREMENT;						// Increment streak bonus percentage by this value for every "streak point".
@@ -40,7 +39,6 @@ public class PluginConfig
 		DB_PASS = config.getString("mysql.password", "password");
 		DB_NAME = config.getString("mysql.database", "quests");
 		
-		STREAK_MULTIPLIER = config.getDouble("streak_multiplier", .15);
 		CYCLE_MULTIPLIER = config.getDouble("cycle_multiplier", .15);
 		
 		STREAK_BONUS_CAP = config.getDouble("streak_bonus_cap", 100);

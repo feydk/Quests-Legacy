@@ -190,6 +190,10 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		int cycle_quest_count = Quests.getNumberOfQuestsInCycle();
 		double percentage = ((double)cycle_quest_count / 100.0) * (double)cycle_progress;
 		
+		// Just to be safe ;)
+		if(percentage > 100)
+			percentage = 100;
+		
 		msg += indent + ChatColor.DARK_AQUA + "Current progress: " + ChatColor.AQUA + cycle_progress + "/" + cycle_quest_count + " (" + (int)percentage + "%)\n";
 		
 		if(player.getModel().Cycle > 1)
@@ -440,7 +444,10 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			}
 			
 			// Handle streak rewards (set up in the config file).
-			msg += getStreakResult(player.getModel().Streak, entity);
+			msg += getStreakRewardsResult(player.getModel().Streak, entity);
+			
+			// Handle "have done X quests in this cycle" rewards (set up in the config file).
+			msg += getQuestsCompletedRewardsResult(player.getTotalQuests(QuestStatus.Complete, player.getModel().Cycle), entity);
 			
 			// Issue command(s) for this quest.
 			if(player.getCurrentQuest().getQuest().getRewards() != null)
@@ -653,13 +660,38 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		players.remove(event.getPlayer().getUniqueId());
 	}
 	
-	private String getStreakResult(int streak, Player entity)
+	private String getStreakRewardsResult(int streak, Player entity)
 	{
 		String msg = "";
 
 		if(PluginConfig.MILESTONE_REWARDS.containsKey("streak_of_" + streak))
 		{
 			List<QuestReward> rewards = PluginConfig.MILESTONE_REWARDS.get("streak_of_" + streak);
+			
+			if(!rewards.isEmpty())
+			{
+				for(QuestReward reward : rewards)
+				{
+					String command = reward.Command;
+					command = command.replaceAll("%player%", entity.getName());
+					command = command.replaceAll("%uuid%", entity.getUniqueId().toString());
+					
+					getServer().dispatchCommand(getServer().getConsoleSender(), command);
+					msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + reward.Text.replaceAll("%happy%", "ツ") + "\n";
+				}
+			}
+		}
+		
+		return msg;
+	}
+	
+	private String getQuestsCompletedRewardsResult(int count, Player entity)
+	{
+		String msg = "";
+
+		if(PluginConfig.MILESTONE_REWARDS.containsKey("completed_" + count + "_quests"))
+		{
+			List<QuestReward> rewards = PluginConfig.MILESTONE_REWARDS.get("completed_" + count + "_quests");
 			
 			if(!rewards.isEmpty())
 			{

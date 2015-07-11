@@ -124,8 +124,7 @@ public class QuestPlayer
 		params.put(5, model.Cycle);
 		
 		int complete_count = Quests.db.getInt(query, params);	// Number of completed quests in current tier and cycle.
-		//System.out.println("Completed: " + complete_count);
-		//System.out.println("In tier: " + total_count);
+
 		if(total_count > 0 && complete_count > -1 && total_count <= complete_count)
 		{
 			return incrementTier();
@@ -142,7 +141,6 @@ public class QuestPlayer
 		if(model.Tier > total_count)
 		{
 			model.Tier = 1;
-			//model.Streak = 0;
 			model.Cycle++;
 			
 			return model.update();
@@ -165,8 +163,6 @@ public class QuestPlayer
 			multiplier = PluginConfig.STREAK_BONUS_INCREMENT * streak;
 		
 		return (multiplier / 100.0) * getCurrentQuest().getQuestModel().Reward;
-		
-		//return (double)player.getCurrentQuest().getQuestModel().Reward * ((player.getModel().Streak + 1) * PluginConfig.STREAK_MULTIPLIER);
 	}
 	
 	public double calcCycleBonus()
@@ -174,7 +170,7 @@ public class QuestPlayer
 		if(model.Cycle == 1)
 			return 0;
 		
-		return (double)getCurrentQuest().getQuestModel().Reward * ((model.Cycle - 1) * PluginConfig.CYCLE_MULTIPLIER);
+		return (double)getCurrentQuest().getQuestModel().Reward * (model.Cycle * PluginConfig.CYCLE_MULTIPLIER);
 	}
 	
 	// Reset everything!
