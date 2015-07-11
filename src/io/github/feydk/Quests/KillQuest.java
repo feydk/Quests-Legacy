@@ -64,14 +64,28 @@ public class KillQuest extends BaseQuest implements Listener
 			
 			if(config.Entities != null && config.Entities.contains(killed))
 			{
-				boolean ok = true;
+				boolean ok = false;
 				
 				// Scenario 2.
 				if(config.Items != null && config.Items.size() > 0)
 				{
 					ItemStack weapon = p.getItemInHand();
 					
-					ok = config.Items.contains(weapon);
+					for(ItemStack item : config.Items)
+					{
+						if(weapon.getType() == item.getType())
+						{
+							ok = true;
+							break;
+						}
+					}
+					
+					if(!ok)
+						ok = config.Items.contains(weapon);
+				}
+				else
+				{
+					ok = true;
 				}
 				
 				if(ok)

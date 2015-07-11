@@ -22,11 +22,13 @@ public class PluginConfig
 	public static double CYCLE_MULTIPLIER;								// Multiplier for calculating cycle bonuses.
 	public static double STREAK_BONUS_CAP;								// Cap the streak bonus percentage at this value.
 	public static double STREAK_BONUS_INCREMENT;						// Increment streak bonus percentage by this value for every "streak point".
-	
+		
 	public static int QUEST_LIFESPAN;									// Defines the lifespan of a single quest, in minutes.
+	public static double QUEST_COOLDOWN_FACTOR;							// Defines by which factor the remaining time before a new quest is offered should be divided when completing a quest.
 	public static int SERIES_ID;										// What series of quests the plugin is currently set up to use.
 	
 	public static boolean BROADCAST_COMPLETIONS;						// Whether it should be broadcast when a player completes a quest.
+	public static boolean TITLE_ON_COMPLETION;							// Whether the player should see a title when completing a quest.
 	
 	public static Map<String, List<QuestReward>> MILESTONE_REWARDS;		// List of milestone rewards.
 	
@@ -45,9 +47,11 @@ public class PluginConfig
 		STREAK_BONUS_INCREMENT = config.getDouble("streak_bonus_increment", 1);
 		
 		QUEST_LIFESPAN = config.getInt("quest_lifespan", 1440);
+		QUEST_COOLDOWN_FACTOR = config.getDouble("quest_cooldown_factor", 2.0);
 		SERIES_ID = config.getInt("series", 1);
 		
 		BROADCAST_COMPLETIONS = config.getBoolean("broadcast_completions");
+		TITLE_ON_COMPLETION = config.getBoolean("title_on_completion");
 		
 		MILESTONE_REWARDS = new HashMap<String, List<QuestReward>>();
 		

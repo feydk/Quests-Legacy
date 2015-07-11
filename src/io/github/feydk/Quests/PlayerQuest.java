@@ -1,5 +1,7 @@
 package io.github.feydk.Quests;
 
+import java.util.Calendar;
+
 import io.github.feydk.Quests.Db.PlayerQuestModel;
 import io.github.feydk.Quests.Db.QuestModel;
 
@@ -51,11 +53,32 @@ public class PlayerQuest
 		return new PlayerQuest(model);
 	}
 	
+	public long getTimeLeft()
+	{
+		Calendar c = Calendar.getInstance();
+		//long now = c.getTimeInMillis();
+		
+		return model.Expires - c.getTimeInMillis();
+		// See comment in PlayerQuest.accept().
+		/*String tmp = Long.toString(now);
+		String tmp2 = Long.toString(model.Expires);
+		int diff = tmp.length() - tmp2.length();
+		
+		for(int i = 0; i < diff; i++)
+			tmp2 += "0";
+		
+		return Long.parseLong(tmp2) - now;*/
+	}
+	
 	// Accept the quest.
 	public boolean accept()
 	{
-		model.Status = QuestStatus.Accepted;
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.MINUTE, PluginConfig.QUEST_LIFESPAN);
 		
+		model.Status = QuestStatus.Accepted;
+		model.Expires = c.getTimeInMillis();
+
 		return model.update();
 	}
 	
@@ -72,6 +95,10 @@ public class PlayerQuest
 	{
 		model.Status = QuestStatus.Complete;
 		
+		// Apply cooldown decrease.
+		long decrease = (long)(getTimeLeft() / PluginConfig.QUEST_COOLDOWN_FACTOR);
+		model.Expires -= decrease;
+				
 		return model.update();
 	}
 	

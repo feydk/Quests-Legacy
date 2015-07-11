@@ -9,7 +9,8 @@ import org.bukkit.inventory.ItemStack;
 public class SmeltConfig extends BaseConfig
 {
 	public List<ItemStack> Items;
-	public int CachedAmount = -1;
+	public int Amount;
+	public int ClickType;
 	
 	public void parse(String json)
 	{

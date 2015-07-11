@@ -51,6 +51,9 @@ public class FishQuest extends BaseQuest implements Listener
 			if(event.getCaught() == null)
 				return;
 			
+			if(!(event.getCaught() instanceof Item))
+				return;
+			
 			FishConfig config = (FishConfig)player.getCurrentQuest().getQuest().getConfig();
 			
 			ItemStack fish_item = ((Item)event.getCaught()).getItemStack();

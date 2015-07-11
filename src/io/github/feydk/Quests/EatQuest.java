@@ -91,7 +91,7 @@ public class EatQuest extends BaseQuest implements Listener
 				
 				EatConfig config = (EatConfig)player.getCurrentQuest().getQuest().getConfig();
 				ItemStack cake = new ItemStack(Material.CAKE_BLOCK);
-				
+
 				if(config.Items != null && config.Items.contains(cake))
 					plugin.updateProgress(player, p, 1);
 			}

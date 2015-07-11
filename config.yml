@@ -10,7 +10,9 @@ cycle_multiplier: 0.05
 streak_bonus_cap: 100
 streak_bonus_increment: 1
 quest_lifespan: 5
+quest_cooldown_factor: 2.0
 broadcast_completions: true
+title_on_completion: true
 rewards:
   cycle_complete:
   - text: Enjoy your special reward %happy%

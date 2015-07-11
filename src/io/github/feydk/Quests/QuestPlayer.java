@@ -65,6 +65,16 @@ public class QuestPlayer
 		this.model.update();
 	}
 	
+	public void giveSpecificQuest(int id)
+	{
+		QuestModel model = QuestModel.loadById(id);
+		
+		quest = new PlayerQuest(PlayerQuestModel.create(this.model, model));
+		
+		this.model.CurrentQuestId = quest.getPlayerQuestModel().Id;
+		this.model.update();
+	}
+	
 	public static List<QuestPlayer> getPlayersWithExpiredQuests()
 	{
 		List<PlayerModel> models = PlayerModel.loadPlayersWithExpiredQuests();
@@ -81,54 +91,6 @@ public class QuestPlayer
 		
 		return list;
 	}
-	
-	/*public GetPlayerQuestResult getQuest(boolean force_new, boolean check_expiry)
-	{
-		if(force_new)
-			player_quest = null;
-		
-		if(player_quest == null)
-		{
-			//System.out.println("player_quest is null");
-			GetPlayerQuestResult result = plugin.quests.getPlayerQuest(this, true, force_new);
-			player_quest = result.PlayerQuest;
-			
-			return result;
-		}
-		else
-		{
-			if(check_expiry)
-			{
-				// Check for expiry.
-				Calendar c = Calendar.getInstance();
-				long now = c.getTimeInMillis();
-				c.setTimeInMillis(player_quest.Created);
-				c.add(Calendar.MINUTE, Quests.quest_lifespan);
-				
-				if(c.getTimeInMillis() <= now)
-				{
-					GetPlayerQuestResult result = plugin.quests.getPlayerQuest(this, true, force_new);
-					player_quest = result.PlayerQuest;
-					
-					return result;
-				}
-				else
-				{
-					GetPlayerQuestResult result = new GetPlayerQuestResult();
-					result.PlayerQuest = player_quest;
-				
-					return result;
-				}
-			}
-			else
-			{
-				GetPlayerQuestResult result = new GetPlayerQuestResult();
-				result.PlayerQuest = player_quest;
-			
-				return result;
-			}
-		}
-	}*/
 	
 	// Increment player streak.
 	public boolean incrementStreak()
@@ -215,18 +177,6 @@ public class QuestPlayer
 		return (double)getCurrentQuest().getQuestModel().Reward * ((model.Cycle - 1) * PluginConfig.CYCLE_MULTIPLIER);
 	}
 	
-	// Move last active quest one day back, so a new one can be made immediately.
-	/*public boolean switchQuestDate()
-	{
-		String query = "update quest_player_quests set created = date_add(created, INTERVAL -1 day) where date(created) = date(now()) and series_id = ? and player_id = ?";
-		
-		HashMap<Integer, Object> params = new HashMap<Integer, Object>();
-		params.put(1, model.SeriesId);
-		params.put(2, model.Id);
-		
-		return Quests.db.update(query, params);
-	}*/
-	
 	// Reset everything!
 	public void reset()
 	{
@@ -242,20 +192,6 @@ public class QuestPlayer
 		
 		Quests.db.update(query, params);
 	}
-	
-	// Assign a certain quest.
-	/*public void assignQuestId(int current_id, int new_id)
-	{
-		String query = "update quest_player_quests set quest_id = ?, progress = 0 where series_id = ? and player_id = ? and id = ?";
-		
-		HashMap<Integer, Object> params = new HashMap<Integer, Object>();
-		params.put(1, new_id);
-		params.put(2, model.SeriesId);
-		params.put(3, model.Id);
-		params.put(4, current_id);
-		
-		Quests.db.update(query, params);
-	}*/
 	
 	public boolean resetStreak()
 	{
@@ -278,6 +214,27 @@ public class QuestPlayer
 		
 		if(status > -1)
 			params.put(3, status);
+		
+		int count = Quests.db.getInt(query, params);
+		
+		return count;
+	}
+	
+	// For stats.
+	public int getTotalQuests(int status, int cycle)
+	{
+		String query = "select count(id) from quest_player_quests where player_id = ? and series_id = ? and cycle = ?";
+		
+		if(status > -1)
+			query += " and status = ?";
+		
+		HashMap<Integer, Object> params = new HashMap<Integer, Object>();
+		params.put(1, model.Id);
+		params.put(2, model.SeriesId);
+		params.put(3, cycle);
+		
+		if(status > -1)
+			params.put(4, status);
 		
 		int count = Quests.db.getInt(query, params);
 		

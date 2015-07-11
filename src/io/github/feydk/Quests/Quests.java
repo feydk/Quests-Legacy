@@ -1,12 +1,10 @@
 package io.github.feydk.Quests;
 
-import io.github.feydk.Quests.Db.PlayerQuestModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -31,6 +29,16 @@ public class Quests
 	public static int getNumberOfQuestsInTier(int tier)
 	{
 		return tiers.get(tier);
+	}
+	
+	public static int getNumberOfQuestsInCycle()
+	{
+		int count = 0;
+		
+		for(Entry<Integer, Integer> set : tiers.entrySet())
+			count += set.getValue();
+		
+		return count;
 	}
 	
 	public static int getMaxNumberOfTiers()
@@ -66,22 +74,5 @@ public class Quests
 		}
 		
 		return tiers;
-	}
-		
-	public List<PlayerQuest> getExpiredQuests()
-	{
-		 List<PlayerQuestModel> models = PlayerQuestModel.loadExpiredQuests();
-		 List<PlayerQuest> list = new ArrayList<PlayerQuest>();
-		 
-		 if(models != null && models.size() > 0)
-		 {
-			 for(PlayerQuestModel m : models)
-			 {
-				 PlayerQuest obj = new PlayerQuest(m);
-				 list.add(obj);
-			 }
-		 }
-		 
-		 return list;
 	}
 }

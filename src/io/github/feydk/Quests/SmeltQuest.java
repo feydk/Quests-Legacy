@@ -55,21 +55,17 @@ public class SmeltQuest extends BaseQuest implements Listener
 						
 			if(config.Items != null && config.Items.contains(smelted_item))
 			{
-				// This event is sometimes called twice, so take care of that.
-				int cachedAmount = config.CachedAmount;
-				config.CachedAmount = -2;
-
-				if(cachedAmount == -2)
-					return;
-
 				int amount = event.getItemAmount();
-
-				if(cachedAmount >= 0)
-					amount = cachedAmount - amount;
-
+				
+				if(config.ClickType == 3)
+				{
+					amount = config.Amount;
+					config.Amount = 0;
+				}
+				
 				if(amount == 0)
 					return;
-
+								
 				plugin.updateProgress(player, p, amount);
 			}
 		}
@@ -106,15 +102,23 @@ public class SmeltQuest extends BaseQuest implements Listener
 			if(event.getSlotType() != InventoryType.SlotType.RESULT)
 				return;
 
-			if(!event.isShiftClick())
-				return;
-
 			ItemStack item = event.getCurrentItem();
 
 			if(item != null && item.getType() != Material.AIR)
 			{
 				SmeltConfig config = (SmeltConfig)player.getCurrentQuest().getQuest().getConfig();
-				config.CachedAmount = item.getAmount();
+				
+				if(event.isRightClick())
+					config.ClickType = 1;
+				else if(event.isLeftClick())
+					config.ClickType = 2;
+				else if(event.getHotbarButton() != -1)
+					config.ClickType = 4;
+				
+				if(event.isShiftClick())
+					config.ClickType = 3;
+				
+				config.Amount = item.getAmount();
 			}
 		}
 	}

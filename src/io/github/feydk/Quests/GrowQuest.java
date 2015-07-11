@@ -2,16 +2,13 @@ package io.github.feydk.Quests;
 
 import io.github.feydk.Quests.Config.GrowConfig;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.plugin.Plugin;
 
 // Growing quests can be any of the following:
 // 1. Grow an amount of trees.

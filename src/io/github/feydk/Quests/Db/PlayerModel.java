@@ -136,7 +136,7 @@ public class PlayerModel
 	
 	public static List<PlayerModel> loadPlayersWithExpiredQuests()
 	{
-		String query = "select * from quest_players where id in (select player_id from quest_player_quests where series_id = ? and processed = 0 and created < date_add(now(), INTERVAL -" + PluginConfig.QUEST_LIFESPAN + " MINUTE))";
+		String query = "select * from quest_players where id in (select player_id from quest_player_quests where series_id = ? and processed = 0 and expires <= now() and status in (1, 2, 3, 4))";
 		
 		HashMap<Integer, Object> params = new HashMap<Integer, Object>();
 		params.put(1, PluginConfig.SERIES_ID);

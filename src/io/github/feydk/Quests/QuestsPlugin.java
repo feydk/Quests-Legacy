@@ -1,6 +1,5 @@
 package io.github.feydk.Quests;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,7 +153,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				return true;
 			
 			if(args[0].equals("new"))
-				newQuest(player);
+				newQuest(player, args.length > 1 ? Integer.parseInt(args[1]) : -1);
 			else if(args[0].equals("complete"))
 				completeQuest(player);
 			else if(args[0].equals("reset"))
@@ -170,12 +169,9 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	{		
 		String msg = " " + ChatColor.YELLOW + "Quests helper commands" + "\n";
 		msg += " " + ChatColor.AQUA + "/questadmin" + ChatColor.GRAY + " - " + ChatColor.DARK_AQUA + "Show this menu" + "\n";
-		msg += " " + ChatColor.AQUA + "/questadmin new" + ChatColor.GRAY + " - " + ChatColor.DARK_AQUA + "Force creation of a new quest if player has no active quest" + "\n";
+		msg += " " + ChatColor.AQUA + "/questadmin new <id>" + ChatColor.GRAY + " - " + ChatColor.DARK_AQUA + "Force creation of a new quest if player has no active quest (id is optional)" + "\n";
 		msg += " " + ChatColor.AQUA + "/questadmin complete" + ChatColor.GRAY + " - " + ChatColor.DARK_AQUA + "Force completion of current active quest" + "\n";
 		msg += " " + ChatColor.AQUA + "/questadmin reset" + ChatColor.GRAY + " - " + ChatColor.DARK_AQUA + "Wipe all stats and progress and start from scratch at tier 1" + "\n";
-		
-		if(entity.isOp())
-			msg += " " + ChatColor.AQUA + "/questadmin replace <id>" + ChatColor.GRAY + " - " + ChatColor.DARK_AQUA + "Replace the current quest with a specific quest" + "\n";
 		
 		entity.sendMessage(msg);
 	}
@@ -187,11 +183,17 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		String indent = " ";
 		
 		String msg = ChatColor.AQUA + "=== Quest Statistics for " + entity.getName() + " ===\n";
-		msg += indent + ChatColor.DARK_AQUA + "Tier: " + ChatColor.AQUA + player.getModel().Tier + "\n";
-		msg += indent + ChatColor.DARK_AQUA + "Streak: " + ChatColor.AQUA + player.getModel().Streak + "\n";
+		msg += indent + ChatColor.DARK_AQUA + "Current tier: " + ChatColor.AQUA + player.getModel().Tier + "\n";
+		msg += indent + ChatColor.DARK_AQUA + "Current streak: " + ChatColor.AQUA + player.getModel().Streak + "\n";
+		
+		int cycle_progress = player.getTotalQuests(QuestStatus.Complete, player.getModel().Cycle);
+		int cycle_quest_count = Quests.getNumberOfQuestsInCycle();
+		double percentage = ((double)cycle_quest_count / 100.0) * (double)cycle_progress;
+		
+		msg += indent + ChatColor.DARK_AQUA + "Current progress: " + ChatColor.AQUA + cycle_progress + "/" + cycle_quest_count + " (" + (int)percentage + "%)\n";
 		
 		if(player.getModel().Cycle > 1)
-			msg += indent + ChatColor.DARK_AQUA + "Cycle: " + ChatColor.AQUA + player.getModel().Cycle + "\n";
+			msg += indent + ChatColor.DARK_AQUA + "Current cycle: " + ChatColor.AQUA + player.getModel().Cycle + "\n";
 		
 		msg += indent + ChatColor.AQUA + "§m   §r " + ChatColor.AQUA + "Quests §m   §r\n";
 		
@@ -278,7 +280,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		json += "{color: \"aqua\", text: \" §m   §r \"}, {color: \"aqua\", text: \"Stats \"}, {color: \"aqua\", text: \"§m   §r\n\"}, ";
 		
 		// Tier
-		json += "{color: \"dark_aqua\", text: \" Tier: \"}, {color: \"aqua\", text: \"" + player.getCurrentQuest().getQuestModel().Tier + "\n\"}, ";
+		//json += "{color: \"dark_aqua\", text: \" Tier: \"}, {color: \"aqua\", text: \"" + player.getCurrentQuest().getQuestModel().Tier + "\n\"}, ";
 		
 		// Reward
 		json += "{color: \"dark_aqua\", text: \" Reward: \"}, {color: \"aqua\", text: \"" + economy.format(total_reward) + "\n\"";
@@ -301,12 +303,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		// Progress and time left
 		if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Accepted)
 		{
-			Calendar c = Calendar.getInstance();
-			long now = c.getTimeInMillis();
-			c.setTimeInMillis(player.getCurrentQuest().getPlayerQuestModel().Created);
-			c.add(Calendar.MINUTE, PluginConfig.QUEST_LIFESPAN);
-
-			long ms = c.getTimeInMillis() - now;
+			long ms = player.getCurrentQuest().getTimeLeft();
 			int minutes = (int)((ms / (1000*60)) % 60);
 			int hours  = (int)((ms / (1000*60*60)) % 24);
 			
@@ -327,12 +324,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		// Next quest
 		else if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Complete || player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Cancelled)
 		{
-			Calendar c = Calendar.getInstance();
-			long now = c.getTimeInMillis();
-			c.setTimeInMillis(player.getCurrentQuest().getPlayerQuestModel().Created);
-			c.add(Calendar.MINUTE, PluginConfig.QUEST_LIFESPAN);
-
-			long ms = c.getTimeInMillis() - now;
+			long ms = player.getCurrentQuest().getTimeLeft();
 			int minutes = (int)((ms / (1000*60)) % 60);
 			int hours  = (int)((ms / (1000*60*60)) % 24);
 			
@@ -455,7 +447,11 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			{
 				for(QuestReward r : player.getCurrentQuest().getQuest().getRewards())
 				{
-					getServer().dispatchCommand(getServer().getConsoleSender(), r.Command.replaceAll("%player%", entity.getName()));
+					String command = r.Command;
+					command = command.replaceAll("%player%", entity.getName());
+					command = command.replaceAll("%uuid%", entity.getUniqueId().toString());
+					
+					getServer().dispatchCommand(getServer().getConsoleSender(), command);
 					msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + "Special reward: " + ChatColor.AQUA + r.Text + "\n";
 				}
 			}
@@ -477,7 +473,11 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 						{
 							for(QuestReward reward : rewards)
 							{
-								getServer().dispatchCommand(getServer().getConsoleSender(), reward.Command.replaceAll("%player%", entity.getName()));
+								String command = reward.Command;
+								command = command.replaceAll("%player%", entity.getName());
+								command = command.replaceAll("%uuid%", entity.getUniqueId().toString());
+								
+								getServer().dispatchCommand(getServer().getConsoleSender(), command);
 								msg += " " + ChatColor.GOLD + "✦ " + reward.Text.replaceAll("%happy%", "ツ") + "\n";
 							}
 						}
@@ -497,9 +497,9 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			player = players.get(entity.getUniqueId());
 			
 			giveMoney(player, player.getCurrentQuest().getPlayerQuestModel().Reward + player.getCurrentQuest().getPlayerQuestModel().StreakBonus + player.getCurrentQuest().getPlayerQuestModel().CycleBonus);
-			
-			entity.playSound(entity.getLocation(), Sound.ORB_PICKUP, 1, (float).5);
-			
+						
+			entity.playSound(entity.getLocation(), Sound.LEVEL_UP, 1, 1);
+									
 			// Broadcast to all players that this player completed a quest.
 			if(PluginConfig.BROADCAST_COMPLETIONS)
 			{
@@ -513,6 +513,26 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				
 				broadcastJsonMessage(json);
 			}
+			
+			if(PluginConfig.TITLE_ON_COMPLETION)
+			{
+				String json = "{ color: \"green\", text: \"Quest Completed!\" }";
+				getServer().dispatchCommand(getServer().getConsoleSender(), "title " + entity.getName() + " subtitle " + json);
+				getServer().dispatchCommand(getServer().getConsoleSender(), "title " + entity.getName() + " title ''");
+				
+				final String player_name = entity.getName();
+				final String quest_name = player.getCurrentQuest().getQuestModel().Name;
+				
+				getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable()
+				{
+					public void run()
+					{
+						String json = "{ color: \"green\", text: \"" + quest_name + "\" }";
+						getServer().dispatchCommand(getServer().getConsoleSender(), "title " + player_name + " subtitle " + json);
+						getServer().dispatchCommand(getServer().getConsoleSender(), "title " + player_name + " title ''");
+					}
+				}, 40);
+			}
 		}
 		else
 		{
@@ -520,12 +540,10 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			return;
 		}
 		
-		//player.reloadQuest();
-		
 		entity.sendMessage(msg);
 	}
 	
-	private void newQuest(Player entity)
+	private void newQuest(Player entity, int forced_id)
 	{		
 		QuestPlayer player = players.get(entity.getUniqueId());
 		
@@ -538,7 +556,10 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		if(player.getCurrentQuest().getPlayerQuestModel() != null)
 			player.getCurrentQuest().setProcessed();
 		
-		player.giveRandomQuest();
+		if(forced_id < 0)
+			player.giveRandomQuest();
+		else
+			player.giveSpecificQuest(forced_id);
 		
 		notifyPlayerOfQuest(entity, player.getCurrentQuest().getPlayerQuestModel().Status, 0);
 	}
@@ -552,16 +573,6 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		
 		entity.sendMessage("Stats wiped!");
 	}
-	
-	/*private void replaceQuest(Player entity, int id)
-	{		
-		QuestPlayer player = players.get(entity.getUniqueId());
-		PlayerQuest q = player.getQuest(false, false).PlayerQuest;
-		player.assignQuestId(q.Id, id);
-		
-		players.replace(entity.getUniqueId(), QuestPlayer.getByUUID(entity.getUniqueId()));
-		entity.sendMessage("Quest replaced!");
-	}*/
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	private void onPlayerJoin(PlayerJoinEvent event)
@@ -654,7 +665,11 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			{
 				for(QuestReward reward : rewards)
 				{
-					getServer().dispatchCommand(getServer().getConsoleSender(), reward.Command.replaceAll("%player%", entity.getName()));
+					String command = reward.Command;
+					command = command.replaceAll("%player%", entity.getName());
+					command = command.replaceAll("%uuid%", entity.getUniqueId().toString());
+					
+					getServer().dispatchCommand(getServer().getConsoleSender(), command);
 					msg += " " + ChatColor.GREEN + "✦ " + ChatColor.DARK_AQUA + reward.Text.replaceAll("%happy%", "ツ") + "\n";
 				}
 			}
@@ -667,7 +682,11 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	{
 		player.getCurrentQuest().getPlayerQuestModel().Progress += amount;
 		
-		entity.playSound(entity.getLocation(), Sound.ORB_PICKUP, 1, 1);
+		float percentage = (100f / (float)player.getCurrentQuest().getQuestModel().Amount) * (float)player.getCurrentQuest().getPlayerQuestModel().Progress;
+		percentage = percentage / 100f;
+		//debug(percentage);
+		//entity.playSound(entity.getLocation(), Sound.ORB_PICKUP, 1, 1);
+		entity.playSound(entity.getLocation(), Sound.NOTE_PIANO, 1, percentage);
 		
 		if(player.getCurrentQuest().updateProgress())
 		{

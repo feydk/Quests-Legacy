@@ -5,9 +5,7 @@ import io.github.feydk.Quests.Quests;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class PlayerQuestModel
 {
@@ -18,6 +16,7 @@ public class PlayerQuestModel
 	public int Status;
 	public double Progress;
 	public long Created;
+	public long Expires;
 	public int Cycle;
 	public int Reward;
 	public double StreakBonus;
@@ -39,6 +38,21 @@ public class PlayerQuestModel
 			StreakBonus = rs.getDouble("streak_bonus");
 			CycleBonus = rs.getDouble("cycle_bonus");
 			Created = rs.getTimestamp("created").getTime();
+			
+			if(rs.getTimestamp("expires") != null)
+			{
+				Expires = rs.getTimestamp("expires").getTime();
+				
+				// See comment in PlayerQuest.accept().
+				/*String tmp = Long.toString(Expires);
+				
+				if(tmp.length() > 10)
+				{
+					tmp = tmp.substring(0, 10);
+					Expires = Long.parseLong(tmp);
+				}*/
+			}
+			
 			Processed = rs.getInt("processed");
 			
 			return true;
@@ -74,7 +88,17 @@ public class PlayerQuestModel
 	
 	public boolean update()
 	{
-		String query = "update quest_player_quests set status = ?, progress = ?, cycle = ?, reward = ?, streak_bonus = ?, cycle_bonus = ?, processed = ? where id = ?";
+		// MySQL can't handle the full length of ms for some reason. I found that the first 10 characters actually equals the value that MySQL expects. The rest must be nanoseconds or something..
+		long exp = Expires;
+		String tmp = Long.toString(exp);
+				
+		if(tmp.length() > 10)
+		{
+			tmp = tmp.substring(0, 10);
+			exp = Long.parseLong(tmp);
+		}
+		
+		String query = "update quest_player_quests set status = ?, progress = ?, cycle = ?, reward = ?, streak_bonus = ?, cycle_bonus = ?, processed = ?, expires = FROM_UNIXTIME(" + exp + ") where id = ?";
 		
 		HashMap<Integer, Object> params = new HashMap<Integer, Object>();
 		params.put(1, Status);
@@ -114,37 +138,5 @@ public class PlayerQuestModel
 		}
 		
 		return null;
-	}
-	
-	public static List<PlayerQuestModel> loadExpiredQuests()
-	{
-		String query = "select * from quest_player_quests where series_id = ? and processed = 0 and created < date_add(now(), INTERVAL -" + PluginConfig.QUEST_LIFESPAN + " MINUTE)";
-		
-		HashMap<Integer, Object> params = new HashMap<Integer, Object>();
-		params.put(1, PluginConfig.SERIES_ID);
-		
-		ResultSet rs = Quests.db.select(query, params);
-		
-		List<PlayerQuestModel> list = new ArrayList<PlayerQuestModel>();
-		
-		try
-		{
-			if(rs != null)
-			{
-				while(rs.next())
-				{
-					PlayerQuestModel model = new PlayerQuestModel();
-					model.populate(rs);
-					
-					list.add(model);
-				}
-			}
-		}
-		catch(SQLException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return list;
 	}
 }
