@@ -41,9 +41,9 @@ public class PluginConfig
 		DB_PASS = config.getString("mysql.password", "password");
 		DB_NAME = config.getString("mysql.database", "quests");
 		
-		SOFT_LAUNCH = config.getBoolean("soft_launch");
+		SOFT_LAUNCH = config.getBoolean("soft_launch", false);
 		
-		CYCLE_MULTIPLIER = config.getDouble("cycle_multiplier", .15);
+		CYCLE_MULTIPLIER = config.getDouble("cycle_multiplier", .05);
 		
 		STREAK_BONUS_CAP = config.getDouble("streak_bonus_cap", 100);
 		STREAK_BONUS_INCREMENT = config.getDouble("streak_bonus_increment", 1);
@@ -52,8 +52,8 @@ public class PluginConfig
 		QUEST_COOLDOWN_FACTOR = config.getDouble("quest_cooldown_factor", 2.0);
 		SERIES_ID = config.getInt("series", 1);
 		
-		BROADCAST_COMPLETIONS = config.getBoolean("broadcast_completions");
-		TITLE_ON_COMPLETION = config.getBoolean("title_on_completion");
+		BROADCAST_COMPLETIONS = config.getBoolean("broadcast_completions", true);
+		TITLE_ON_COMPLETION = config.getBoolean("title_on_completion", true);
 		
 		MILESTONE_REWARDS = new HashMap<String, List<QuestReward>>();
 		

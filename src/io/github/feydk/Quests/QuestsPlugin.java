@@ -646,7 +646,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				player.giveRandomQuest();
 			}
 		}
-		
+
 		if(!PluginConfig.SOFT_LAUNCH)
 			notifyPlayerOfQuest(entity, player.getCurrentQuest().getPlayerQuestModel().Status, 160);
 	}
@@ -745,7 +745,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				if(status == QuestStatus.Accepted)
 					msg = "[{color: \"green\", text: \" Reminder: You have a quest that's not completed yet.\n\"},{color: \"dark_aqua\", text: \" [Click here] for details.\", clickEvent: {action: \"run_command\", value: \"/quest\" }, hoverEvent: {action: \"show_text\", value: \"Clicking will show the\nquest details.\"}}]";
 				
-				if(status != QuestStatus.Cancelled)
+				if(status != QuestStatus.Cancelled && status != QuestStatus.Complete)
 					sendJsonMessage(player, msg);
 			}
 		}, delay);
