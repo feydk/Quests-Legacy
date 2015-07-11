@@ -51,8 +51,6 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	public void onEnable()
 	{
 		reloadConfig();
-		getConfig().options().copyDefaults(true);
-		saveConfig();
 		
 		Config = new PluginConfig(getConfig());
 		
@@ -508,7 +506,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			entity.playSound(entity.getLocation(), Sound.LEVEL_UP, 1, 1);
 									
 			// Broadcast to all players that this player completed a quest.
-			if(PluginConfig.BROADCAST_COMPLETIONS)
+			if(PluginConfig.BROADCAST_COMPLETIONS && !PluginConfig.SOFT_LAUNCH)
 			{
 				String json = "[{color: \"white\", text: \"" + entity.getName() + " has completed the quest \"},";
 				json += "{color: \"green\", text: \"[" + player.getCurrentQuest().getQuestModel().Name + "]\", hoverEvent: {action: \"show_text\", value: \"" + player.getCurrentQuest().getQuestModel().Description;
@@ -623,16 +621,19 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		{
 			getLogger().info(entity.getName() + " didn't complete their last quest in time.");
 			
-			getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable()
+			if(!PluginConfig.SOFT_LAUNCH)
 			{
-				public void run()
+				getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable()
 				{
-					String msg = " " + ChatColor.AQUA + "Aaawww! You didn't manage to complete your last quest in time.";
-					msg += "\n A new quest will be created for you shortly..";
-			
-					entity.sendMessage(msg);
-				}
-			}, 60);
+					public void run()
+					{
+						String msg = " " + ChatColor.AQUA + "Aaawww! You didn't manage to complete your last quest in time.";
+						msg += "\n A new quest will be created for you shortly..";
+				
+						entity.sendMessage(msg);
+					}
+				}, 60);
+			}
 			
 			// And give him a new quest.
 			player.giveRandomQuest();
@@ -646,7 +647,8 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			}
 		}
 		
-		notifyPlayerOfQuest(entity, player.getCurrentQuest().getPlayerQuestModel().Status, 160);
+		if(!PluginConfig.SOFT_LAUNCH)
+			notifyPlayerOfQuest(entity, player.getCurrentQuest().getPlayerQuestModel().Status, 160);
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

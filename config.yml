@@ -5,6 +5,7 @@ mysql:
   password: password
   database: quests
 series: 1
+soft_launch: true
 cycle_multiplier: 0.05
 streak_bonus_cap: 100
 streak_bonus_increment: 1
@@ -19,3 +20,6 @@ rewards:
   streak_of_5:
   - text: You're on a roll! Enjoy this diamond %happy%
     command: give %player% diamond 1
+  completed_5_quests:
+  - text: You have completed 5 quests! Amazing!
+    command: give %player% minecraft:fish 1 3

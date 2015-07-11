@@ -63,13 +63,15 @@ public class QuestScheduler extends BukkitRunnable
 					
 						msg += "\n A new quest will be created for you shortly..";
 						
-						((Player)entity).sendMessage(msg);
+						if(!PluginConfig.SOFT_LAUNCH)
+							((Player)entity).sendMessage(msg);
 						
 						p.giveRandomQuest();
 						
 						plugin.players.replace(p.getModel().UUID, p);
 						
-						plugin.notifyPlayerOfQuest((Player)entity, p.getCurrentQuest().getPlayerQuestModel().Status, 50);
+						if(!PluginConfig.SOFT_LAUNCH)
+							plugin.notifyPlayerOfQuest((Player)entity, p.getCurrentQuest().getPlayerQuestModel().Status, 50);
 					}
 				}
 				// If the quest has any other status..
@@ -85,7 +87,8 @@ public class QuestScheduler extends BukkitRunnable
 						
 						plugin.players.replace(p.getModel().UUID, p);
 						
-						plugin.notifyPlayerOfQuest((Player)entity, p.getCurrentQuest().getPlayerQuestModel().Status, 50);
+						if(!PluginConfig.SOFT_LAUNCH)
+							plugin.notifyPlayerOfQuest((Player)entity, p.getCurrentQuest().getPlayerQuestModel().Status, 50);
 					}
 				}
 			}
