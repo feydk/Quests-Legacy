@@ -18,10 +18,10 @@ commands:
     permission: quests.admin
     aliases: qa
     usage: |-
-      /questadmin new - Force creation of a new quest if player has no active quest
+      /questadmin new <id> - Force creation of a new quest if player has no active quest (id is optional)
       /questadmin complete - Force completion of current active quest
       /questadmin reset - Wipe all stats and progress and start from scratch at tier 1
-      /questadmin replace <id> - Replace the current quest with a specific quest
+      /questadmin check - Validate that all quest configs have valid json
 permissions:
   quests.quests:
     description: Use /quests

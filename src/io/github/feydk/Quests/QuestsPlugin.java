@@ -1,5 +1,7 @@
 package io.github.feydk.Quests;
 
+import io.github.feydk.Quests.Db.QuestModel;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 // http://www.spigotmc.org/threads/symbols-in-motd.10092/
 
@@ -136,6 +140,9 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		
 		if(command.getName().equals("quest"))
 		{
+			if(!player.hasPermission("quests.quests"))
+				return true;
+			
 			if(args.length == 0 || args[0].equals("info"))
 				showQuestDetails(player);
 			else if(args[0].equals("accept"))
@@ -156,6 +163,8 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				completeQuest(player);
 			else if(args[0].equals("reset"))
 				resetPlayer(player);
+			else if(args[0].equals("check"))
+				checkConfigs(player);
 			//else if(args[0].equals("replace") && args.length == 2)
 			//	replaceQuest(player, Integer.parseInt(args[1]));
 		}
@@ -170,6 +179,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		msg += " " + ChatColor.AQUA + "/questadmin new <id>" + ChatColor.GRAY + " - " + ChatColor.DARK_AQUA + "Force creation of a new quest if player has no active quest (id is optional)" + "\n";
 		msg += " " + ChatColor.AQUA + "/questadmin complete" + ChatColor.GRAY + " - " + ChatColor.DARK_AQUA + "Force completion of current active quest" + "\n";
 		msg += " " + ChatColor.AQUA + "/questadmin reset" + ChatColor.GRAY + " - " + ChatColor.DARK_AQUA + "Wipe all stats and progress and start from scratch at tier 1" + "\n";
+		msg += " " + ChatColor.AQUA + "/questadmin check" + ChatColor.GRAY + " - " + ChatColor.DARK_AQUA + "Validate that all quest configs have valid json" + "\n";
 		
 		entity.sendMessage(msg);
 	}
@@ -522,8 +532,8 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			if(PluginConfig.TITLE_ON_COMPLETION)
 			{
 				String json = "{ color: \"green\", text: \"Quest Completed!\" }";
-				getServer().dispatchCommand(getServer().getConsoleSender(), "title " + entity.getName() + " subtitle " + json);
-				getServer().dispatchCommand(getServer().getConsoleSender(), "title " + entity.getName() + " title ''");
+				getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:title " + entity.getName() + " subtitle " + json);
+				getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:title " + entity.getName() + " title ''");
 				
 				final String player_name = entity.getName();
 				final String quest_name = player.getCurrentQuest().getQuestModel().Name;
@@ -533,8 +543,8 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 					public void run()
 					{
 						String json = "{ color: \"green\", text: \"" + quest_name + "\" }";
-						getServer().dispatchCommand(getServer().getConsoleSender(), "title " + player_name + " subtitle " + json);
-						getServer().dispatchCommand(getServer().getConsoleSender(), "title " + player_name + " title ''");
+						getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:title " + player_name + " subtitle " + json);
+						getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:title " + player_name + " title ''");
 					}
 				}, 40);
 			}
@@ -577,6 +587,26 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		players.replace(entity.getUniqueId(), QuestPlayer.getByUUID(entity.getUniqueId()));
 		
 		entity.sendMessage("Stats wiped!");
+	}
+	
+	private void checkConfigs(Player entity)
+	{
+		List<QuestModel> list = QuestModel.loadListAll();
+		boolean ok = true;
+		
+		for(QuestModel q : list)
+		{
+			JSONObject o = (JSONObject)JSONValue.parse(q.Config);
+			
+			if(o == null)
+			{
+				entity.sendMessage(" " + ChatColor.RED + "\"" + q.Name + "\" (ID " + q.Id + ") has invalid json config");
+				ok = false;
+			}
+		}
+		
+		if(ok)
+			entity.sendMessage(" All good!");
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

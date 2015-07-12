@@ -7,7 +7,9 @@ import io.github.feydk.Quests.Quests;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class QuestModel
 {
@@ -103,5 +105,34 @@ public class QuestModel
 		}
 		
 		return null;
+	}
+	
+	public static List<QuestModel> loadListAll()
+	{
+		List<QuestModel> list = new ArrayList<QuestModel>();
+		
+		String query = "select * from quest_quests order by id";
+		
+		ResultSet rs = Quests.db.select(query, null);
+		
+		try
+		{
+			if(rs != null)
+			{
+				while(rs.next())
+				{
+					QuestModel obj = new QuestModel();
+					obj.populate(rs);
+					
+					list.add(obj);
+				}
+			}
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return list;
 	}
 }
