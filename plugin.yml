@@ -2,7 +2,7 @@ name: Quests
 main: io.github.feydk.Quests.QuestsPlugin
 description: Quests will create a quest for you every day. Completing a quest will earn you a reward.
 database: true
-depend: [ Vault, Fe ]
+depend: [ Vault, Fe, Exploits ]
 version: 1.0
 commands:
   quest:
