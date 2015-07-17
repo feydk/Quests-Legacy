@@ -3,7 +3,6 @@ package io.github.feydk.Quests;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -37,8 +36,6 @@ public class QuestScheduler extends BukkitRunnable
 		{
 			for(QuestPlayer p : players)
 			{
-				OfflinePlayer entity = plugin.getServer().getOfflinePlayer(p.getModel().UUID);
-				
 				// If the quest status is Accepted, it means the player didn't complete it in time.
 				if(p.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Accepted)
 				{
@@ -54,7 +51,8 @@ public class QuestScheduler extends BukkitRunnable
 					p.getCurrentQuest().setProcessed();
 					
 					// And if player is online, send him a message, create a new quest and send him a notification about that new quest.
-					if(entity.isOnline())
+					Player entity = plugin.getServer().getPlayer(p.getModel().UUID);
+					if(entity != null)
 					{
 						String msg = " " + ChatColor.AQUA + "Aaawww! You didn't manage to complete your quest in time.";
 						
@@ -64,14 +62,14 @@ public class QuestScheduler extends BukkitRunnable
 						msg += "\n A new quest will be created for you shortly..";
 						
 						if(!PluginConfig.SOFT_LAUNCH)
-							((Player)entity).sendMessage(msg);
+							entity.sendMessage(msg);
 						
 						p.giveRandomQuest();
 						
-						plugin.players.replace(p.getModel().UUID, p);
+						plugin.removeQuestPlayer(p.getModel().UUID);
 						
 						if(!PluginConfig.SOFT_LAUNCH)
-							plugin.notifyPlayerOfQuest((Player)entity, p.getCurrentQuest().getPlayerQuestModel().Status, 50);
+							plugin.notifyPlayerOfQuest(entity, p.getCurrentQuest().getPlayerQuestModel().Status, 50);
 					}
 				}
 				// If the quest has any other status..
@@ -81,14 +79,15 @@ public class QuestScheduler extends BukkitRunnable
 					p.getCurrentQuest().setProcessed();
 					
 					// And if player is online, create a new quest and send him a notification about it.
-					if(entity.isOnline())
+					Player entity = plugin.getServer().getPlayer(p.getModel().UUID);
+					if(entity != null)
 					{
 						p.giveRandomQuest();
 						
-						plugin.players.replace(p.getModel().UUID, p);
+						plugin.removeQuestPlayer(p.getModel().UUID);
 						
 						if(!PluginConfig.SOFT_LAUNCH)
-							plugin.notifyPlayerOfQuest((Player)entity, p.getCurrentQuest().getPlayerQuestModel().Status, 50);
+							plugin.notifyPlayerOfQuest(entity, p.getCurrentQuest().getPlayerQuestModel().Status, 50);
 					}
 				}
 			}

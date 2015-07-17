@@ -33,13 +33,7 @@ public class EatQuest extends BaseQuest implements Listener
 		}
 		
 		Player p = event.getPlayer();
-		QuestPlayer player = plugin.players.get(p.getUniqueId());
-		
-		if(player.getCurrentQuest() == null)
-		{
-			plugin.handleNullQuest(p);
-			return;
-		}
+		QuestPlayer player = plugin.getQuestPlayer(p);
 		
 		if(player.getCurrentQuest().getPlayerQuestModel().Status != QuestStatus.Accepted)
 			return;
@@ -73,13 +67,7 @@ public class EatQuest extends BaseQuest implements Listener
 		if(event.getClickedBlock().getType() == Material.CAKE_BLOCK && event.getAction() == Action.RIGHT_CLICK_BLOCK)
 		{
 			Player p = event.getPlayer();
-			QuestPlayer player = plugin.players.get(p.getUniqueId());
-			
-			if(player.getCurrentQuest() == null)
-			{
-				plugin.handleNullQuest(p);
-				return;
-			}
+			QuestPlayer player = plugin.getQuestPlayer(p);
 			
 			if(player.getCurrentQuest().getPlayerQuestModel().Status != QuestStatus.Accepted)
 				return;

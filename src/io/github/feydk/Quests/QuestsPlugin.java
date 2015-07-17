@@ -35,7 +35,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	public static PluginConfig Config;
 	
 	protected Quests quests;
-	Map<UUID, QuestPlayer> players;	
+	private final Map<UUID, QuestPlayer> questPlayers = new HashMap<>();
 	private QuestScheduler scheduler;
 	
 	private CraftQuest crafting_quest;
@@ -96,13 +96,6 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		
 		// General events.
 		getServer().getPluginManager().registerEvents(this, this);
-		
-		players = new HashMap<UUID, QuestPlayer>();
-		
-		for(Player p : getServer().getOnlinePlayers())
-		{
-			players.put(p.getUniqueId(), QuestPlayer.getByUUID(p.getUniqueId()));
-		}
 		
 		scheduler = new QuestScheduler(this);
 		scheduler.start();
@@ -186,7 +179,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	
 	private void showPlayerStats(Player entity)
 	{
-		QuestPlayer player = players.get(entity.getUniqueId());
+		QuestPlayer player = getQuestPlayer(entity);
 		
 		String indent = " ";
 		
@@ -233,13 +226,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	
 	private void showQuestDetails(Player entity)
 	{
-		QuestPlayer player = players.get(entity.getUniqueId());
-		
-		if(player.getCurrentQuest() == null)
-		{
-			handleNullQuest(entity);
-			return;
-		}
+		QuestPlayer player = getQuestPlayer(entity);
 		
 		// Auto accept quest.
 		if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Created)
@@ -368,13 +355,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	
 	private void acceptQuest(Player entity)
 	{
-		QuestPlayer player = players.get(entity.getUniqueId());
-				
-		if(player.getCurrentQuest() == null)
-		{
-			handleNullQuest(entity);
-			return;
-		}
+		QuestPlayer player = getQuestPlayer(entity);
 		
 		String msg = "";
 		
@@ -388,13 +369,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	
 	private void cancelQuest(Player entity)
 	{
-		QuestPlayer player = players.get(entity.getUniqueId());
-		
-		if(player.getCurrentQuest() == null)
-		{
-			handleNullQuest(entity);
-			return;
-		}
+		QuestPlayer player = getQuestPlayer(entity);
 		
 		String msg = "";
 		
@@ -417,13 +392,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	
 	private void completeQuest(Player entity)
 	{
-		QuestPlayer player = players.get(entity.getUniqueId());
-		
-		if(player.getCurrentQuest() == null)
-		{
-			handleNullQuest(entity);
-			return;
-		}
+		QuestPlayer player = getQuestPlayer(entity);
 		
 		String msg = "";
 		
@@ -507,9 +476,9 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				
 				summonRocket(entity);
 			}
-			
-			players.replace(entity.getUniqueId(), QuestPlayer.getByUUID(entity.getUniqueId()));
-			player = players.get(entity.getUniqueId());
+
+			removeQuestPlayer(entity.getUniqueId());
+			player = getQuestPlayer(entity);
 			
 			giveMoney(player, player.getCurrentQuest().getPlayerQuestModel().Reward + player.getCurrentQuest().getPlayerQuestModel().StreakBonus + player.getCurrentQuest().getPlayerQuestModel().CycleBonus);
 						
@@ -559,8 +528,8 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	}
 	
 	private void newQuest(Player entity, int forced_id)
-	{		
-		QuestPlayer player = players.get(entity.getUniqueId());
+	{
+		QuestPlayer player = getQuestPlayer(entity);
 		
 		if(player.getCurrentQuest().getPlayerQuestModel() != null && player.getCurrentQuest().getPlayerQuestModel().Status != QuestStatus.Complete)
 		{
@@ -581,10 +550,10 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	
 	private void resetPlayer(Player entity)
 	{		
-		QuestPlayer player = players.get(entity.getUniqueId());
+		QuestPlayer player = getQuestPlayer(entity);
 		
 		player.reset();
-		players.replace(entity.getUniqueId(), QuestPlayer.getByUUID(entity.getUniqueId()));
+		removeQuestPlayer(entity.getUniqueId());
 		
 		entity.sendMessage("Stats wiped!");
 	}
@@ -608,6 +577,49 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		if(ok)
 			entity.sendMessage(" All good!");
 	}
+
+	QuestPlayer getQuestPlayer(UUID uuid, String name)
+	{
+		QuestPlayer player = questPlayers.get(uuid);
+		if (player != null) return player;
+
+		player = QuestPlayer.getByUUID(uuid);
+		
+		// Player doesn't exist in the db yet, so create him now.
+		if(player.getModel() == null)
+		{
+			player = QuestPlayer.create(uuid, name);
+			
+			if(player.getModel() == null)
+			{
+				getLogger().warning("Could not create player model for '" + name + "'.");
+				return null;
+			}
+			
+			// Give player a random quest.
+			player.giveRandomQuest();
+		}
+
+		questPlayers.put(uuid, player);
+		
+		// This can happen if we reset a player, so might as well handle it.
+		if(player.getCurrentQuest().getPlayerQuestModel() == null)
+		{
+			player.giveRandomQuest();
+		}
+
+		return player;
+	}
+
+	QuestPlayer getQuestPlayer(Player entity)
+	{
+		return getQuestPlayer(entity.getUniqueId(), entity.getName());
+	}
+
+	void removeQuestPlayer(UUID uuid)
+	{
+		questPlayers.remove(uuid);
+	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	private void onPlayerJoin(PlayerJoinEvent event)
@@ -621,31 +633,8 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		
 		final Player entity = event.getPlayer();
 		
-		QuestPlayer player = QuestPlayer.getByUUID(entity.getUniqueId());
-		
-		// Player doesn't exist in the db yet, so create him now.
-		if(player.getModel() == null)
-		{
-			player = QuestPlayer.create(entity.getUniqueId(), entity.getName());
-			
-			if(player.getModel() == null)
-			{
-				getLogger().warning("Could not create player model for '" + entity.getName() + "'.");
-				return;
-			}
-			
-			// Give player a random quest.
-			player.giveRandomQuest();
-		}
-		
-		players.put(entity.getUniqueId(), player);
-		
-		// This can happen if we reset a player, so might as well handle it.
-		if(player.getCurrentQuest().getPlayerQuestModel() == null)
-		{
-			player.giveRandomQuest();
-		}
-		
+		QuestPlayer player = getQuestPlayer(entity);
+
 		// Let the player know if his last (current) quest wasn't completed before it expired.
 		if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Incomplete)
 		{
@@ -684,12 +673,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	private void onPlayerQuit(PlayerQuitEvent event)
 	{
-		if(!event.getPlayer().hasPermission("quests.quests"))
-		{
-			return;
-		}
-		
-		players.remove(event.getPlayer().getUniqueId());
+		removeQuestPlayer(event.getPlayer().getUniqueId());
 	}
 	
 	private String getStreakRewardsResult(int streak, Player entity)
@@ -781,14 +765,6 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		}, delay);
 	}
 	
-	// This is called from quest events if a PlayerQuest can't be found.
-	// If that happens, it's almost without a doubt because the database was manipulated by hand or because the automatic tier and/or cycle rank-up didn't work.
-	void handleNullQuest(Player player)
-	{
-		player.sendMessage(ChatColor.RED + " Sorry, something went wrong. Please make a ticket and refer to this error code: 2");
-		getLogger().warning("PlayerQuest for " + player.getName() + " (UUID: " + player.getUniqueId() + ") was null.");
-	}
-		
 	private boolean sendJsonMessage(Player player, String json)
 	{
 		if(player == null)
