@@ -599,6 +599,11 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			// Give player a random quest.
 			player.giveRandomQuest();
 		}
+                else if(!name.equals(player.getModel().Name))
+                {
+                    player.getModel().Name = name;
+                    player.getModel().update();
+                }
 
 		questPlayers.put(uuid, player);
 		
