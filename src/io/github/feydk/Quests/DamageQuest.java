@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.permissions.Permissible;
+import org.bukkit.projectiles.ProjectileSource;
 
 // Take damage quests can be any of the following:
 // 1. Take a certain amount of damage (hearts), no matter how.
@@ -71,7 +72,8 @@ public class DamageQuest extends BaseQuest implements Listener
 					
 					if(damager instanceof Arrow)
 					{
-						damager = ((Arrow)damager).getShooter();
+						ProjectileSource shooter = ((Arrow)damager).getShooter();
+						if (shooter instanceof Entity) damager = (Entity)shooter;
 					}
 					
 					if(config.Entities.contains(damager.getType()))
