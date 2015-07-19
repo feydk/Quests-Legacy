@@ -44,13 +44,7 @@ public class EnchantQuest extends BaseQuest implements Listener
 		}
 		
 		Player p = (Player)event.getEnchanter();
-		QuestPlayer player = plugin.players.get(p.getUniqueId());
-		
-		if(player.getCurrentQuest() == null)
-		{
-			plugin.handleNullQuest(p);
-			return;
-		}
+		QuestPlayer player = plugin.getQuestPlayer(p);
 		
 		if(player.getCurrentQuest().getPlayerQuestModel().Status != QuestStatus.Accepted)
 			return;

@@ -5,6 +5,7 @@ import io.github.feydk.Quests.Config.MineConfig;
 import java.util.Collection;
 import java.util.Map.Entry;
 
+import com.winthier.exploits.bukkit.BukkitExploits;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -39,13 +40,7 @@ public class MineQuest extends BaseQuest implements Listener
 		}
 		
 		Player p = event.getPlayer();		
-		QuestPlayer player = plugin.players.get(p.getUniqueId());
-		
-		if(player.getCurrentQuest() == null)
-		{
-			plugin.handleNullQuest(p);
-			return;
-		}
+		QuestPlayer player = plugin.getQuestPlayer(p);
 		
 		if(player.getCurrentQuest().getPlayerQuestModel().Status != QuestStatus.Accepted)
 			return;
@@ -54,13 +49,9 @@ public class MineQuest extends BaseQuest implements Listener
 		{
 			if(!checkGenericRequirements(player.getCurrentQuest().getQuest().getConfig(), p))
 				return;
-			
-			// Ignore if the tool used to mine the block has silk touch on it.
-			for(Entry<Enchantment, Integer> ench : p.getItemInHand().getEnchantments().entrySet())
-			{	
-				if(ench.getKey().getName().equals("SILK_TOUCH"))
-					return;
-			}
+
+			// Ignore if the block was placed by a player.
+			if (BukkitExploits.getInstance().isPlayerPlaced(event.getBlock())) return;
 			
 			MineConfig config = (MineConfig)player.getCurrentQuest().getQuest().getConfig();
 			

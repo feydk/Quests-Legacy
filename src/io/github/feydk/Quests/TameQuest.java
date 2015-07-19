@@ -35,13 +35,7 @@ public class TameQuest extends BaseQuest implements Listener
 		}
 		
 		Player p = (Player)event.getOwner();
-		QuestPlayer player = plugin.players.get(p.getUniqueId());
-		
-		if(player.getCurrentQuest() == null)
-		{
-			plugin.handleNullQuest(p);
-			return;
-		}
+		QuestPlayer player = plugin.getQuestPlayer(p);
 		
 		if(player.getCurrentQuest().getPlayerQuestModel().Status != QuestStatus.Accepted)
 			return;
