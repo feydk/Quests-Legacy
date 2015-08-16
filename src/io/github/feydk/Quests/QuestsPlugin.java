@@ -373,6 +373,12 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		
 		String msg = "";
 		
+		if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Complete)
+		{
+			entity.sendMessage(ChatColor.RED + " You've already completed this quest.");
+			return;
+		}
+		
 		if(player.getCurrentQuest().cancel())
 		{
 			msg = "[";
