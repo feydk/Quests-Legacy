@@ -1,5 +1,6 @@
 package io.github.feydk.Quests;
 
+import io.github.feydk.Quests.Db.Highscore;
 import io.github.feydk.Quests.Db.QuestModel;
 
 import java.util.HashMap;
@@ -144,6 +145,8 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 				cancelQuest(player);
 			else if(args[0].equals("me"))
 				showPlayerStats(player);
+			else if(args[0].equals("hi"))
+				showHighscore(player);
 		}
 		else if(command.getName().equals("questadmin"))
 		{
@@ -220,6 +223,35 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			msg += indent + ChatColor.DARK_AQUA + "Cycle bonuses: " + ChatColor.AQUA + economy.format(cycle) + "\n";
 		
 		msg += indent + ChatColor.DARK_AQUA + "Total rewards: " + ChatColor.AQUA + economy.format(base + streak + cycle) + "\n";
+		
+		entity.sendMessage(msg);
+	}
+	
+	private void showHighscore(Player entity)
+	{
+		String msg = ChatColor.AQUA + "=== Quests Highscore ===\n";
+		
+		List<Highscore> list = Highscore.getHighscore(10);
+		
+		if(list.size() > 0)
+		{
+			int i = 1;
+			int max = 0;
+			
+			for(Highscore h : list)
+			{
+				if(h.count > max)
+					max = h.count;
+			}
+			
+			for(Highscore h : list)
+			{
+				msg += "§3#" + String.format("%02d", i) + " §f" + String.format("%0" + String.valueOf(max).length() + "d", h.count) + " §b" + h.name + "\n";
+				i++;
+			}
+		}
+		
+		msg += " \n";
 		
 		entity.sendMessage(msg);
 	}
@@ -346,7 +378,8 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		else if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Accepted)
 			json += "{color: \"red\", text: \" [Cancel]\", clickEvent: {action: \"run_command\", value: \"/quest cancel\" }, hoverEvent: {action: \"show_text\", value: \"" + ChatColor.RED + "Cancel this quest.\nDoing so will disable\nreminders about this quest.\nIt will not break your streak.\"}}, ";
 		
-		json += "{text: \" \"},{color: \"gold\", text: \"[Stats]\", clickEvent: {action: \"run_command\", value: \"/quest me\" }, hoverEvent: {action: \"show_text\", value: \"View your personal stats.\"}}";
+		json += "{text: \" \"},{color: \"gold\", text: \"[Stats]\", clickEvent: {action: \"run_command\", value: \"/quest me\" }, hoverEvent: {action: \"show_text\", value: \"View your personal stats.\"}}, ";
+		json += "{text: \" \"},{color: \"gold\", text: \"[Highscore]\", clickEvent: {action: \"run_command\", value: \"/quest hi\" }, hoverEvent: {action: \"show_text\", value: \"View the top 10.\"}}";
 		
 		json += "]";
 		
@@ -494,10 +527,10 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			if(PluginConfig.BROADCAST_COMPLETIONS && !PluginConfig.SOFT_LAUNCH)
 			{
 				String json = "[{color: \"white\", text: \"" + entity.getName() + " has completed the quest \"},";
-				json += "{color: \"green\", text: \"[" + player.getCurrentQuest().getQuestModel().Name + "]\", hoverEvent: {action: \"show_text\", value: \"" + player.getCurrentQuest().getQuestModel().Description;
+				json += "{ text: \"§a[" + player.getCurrentQuest().getQuestModel().Name + "]\", hoverEvent: {action: \"show_text\", value: \"§a" + player.getCurrentQuest().getQuestModel().Name + "\n" + player.getCurrentQuest().getQuestModel().Description;
 				
 				if(player.getModel().Streak > 1)
-					json += "\nNow on a streak of " + player.getModel().Streak;
+					json += "\n§oNow on a streak of " + player.getModel().Streak;
 				
 				json += "\"}}]";
 				

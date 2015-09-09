@@ -41,6 +41,7 @@ public class BaseConfig
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public ArrayList<ItemStack> parseItems(String json)
 	{
 		JSONObject o = (JSONObject)JSONValue.parse(json);

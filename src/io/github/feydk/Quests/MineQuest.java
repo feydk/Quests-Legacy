@@ -3,11 +3,9 @@ package io.github.feydk.Quests;
 import io.github.feydk.Quests.Config.MineConfig;
 
 import java.util.Collection;
-import java.util.Map.Entry;
 
 import com.winthier.exploits.bukkit.BukkitExploits;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
