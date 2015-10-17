@@ -617,7 +617,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			entity.sendMessage(" All good!");
 	}
 
-	QuestPlayer getQuestPlayer(UUID uuid, String name)
+	public QuestPlayer getQuestPlayer(UUID uuid, String name)
 	{
 		QuestPlayer player = questPlayers.get(uuid);
 		if (player != null) return player;
@@ -655,7 +655,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		return player;
 	}
 
-	QuestPlayer getQuestPlayer(Player entity)
+	public QuestPlayer getQuestPlayer(Player entity)
 	{
 		return getQuestPlayer(entity.getUniqueId(), entity.getName());
 	}
