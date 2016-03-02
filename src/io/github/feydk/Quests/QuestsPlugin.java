@@ -285,40 +285,40 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		String json = "[";
 		
 		// === Today's Quest ===
-		json += "{color: \"aqua\", text: \"=== \"}, {color: \"yellow\", text: \"✦\"}, {color: \"aqua\", text: \" Today's Quest ===\n\"}, ";
+		json += "{\"color\": \"aqua\", \"text\": \"=== \"}, {\"color\": \"yellow\", \"text\": \"✦\"}, {\"color\": \"aqua\", \"text\": \" Today's Quest ===\n\"}, ";
 		
 		// Checkmark
 		if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Complete)
 		{
-			json += "{color: \"green\", text: \" ✔\", hoverEvent: {action: \"show_text\", value: \"You have completed\nthis quest.\"}}, ";
+			json += "{\"color\": \"green\", \"text\": \" ✔\", \"hoverEvent\": {\"action\": \"show_text\", \"value\": \"You have completed\nthis quest.\"}}, ";
 		}
 		// Unticked box
 		else if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Cancelled)
 		{
-			json += "{color: \"red\", text: \" ✖\", hoverEvent: {action: \"show_text\", value: \"You have cancelled\nthis quest.\"}}, ";
+			json += "{\"color\": \"red\", \"text\": \" ✖\", \"hoverEvent\": {\"action\": \"show_text\", \"value\": \"You have cancelled\nthis quest.\"}}, ";
 		}
 		
 		// Quest name
-		json += "{color: \"green\", text: \" " + player.getCurrentQuest().getQuestModel().Name + "\n\"}, ";
+		json += "{\"color\": \"green\", \"text\": \" " + player.getCurrentQuest().getQuestModel().Name + "\n\"}, ";
 		
 		// --- Description ---
-		json += "{color: \"aqua\", text: \" §m   §r \"}, {color: \"aqua\", text: \"Description \"}, {color: \"aqua\", text: \"§m   §r\n\"}, ";
+		json += "{\"color\": \"aqua\", \"text\": \" §m   §r \"}, {\"color\": \"aqua\", \"text\": \"Description \"}, {\"color\": \"aqua\", \"text\": \"§m   §r\n\"}, ";
 		
 		// Quest description
-		json += "{color: \"gray\", text: \" " + player.getCurrentQuest().getQuestModel().Description + "\n\"}, ";
+		json += "{\"color\": \"gray\", \"text\": \" " + player.getCurrentQuest().getQuestModel().Description + "\n\"}, ";
 		
 		// --- Stats ---
-		json += "{color: \"aqua\", text: \" §m   §r \"}, {color: \"aqua\", text: \"Stats \"}, {color: \"aqua\", text: \"§m   §r\n\"}, ";
+		json += "{\"color\": \"aqua\", \"text\": \" §m   §r \"}, {\"color\": \"aqua\", \"text\": \"Stats \"}, {\"color\": \"aqua\", \"text\": \"§m   §r\n\"}, ";
 		
 		// Tier
-		//json += "{color: \"dark_aqua\", text: \" Tier: \"}, {color: \"aqua\", text: \"" + player.getCurrentQuest().getQuestModel().Tier + "\n\"}, ";
+		//json += "{\"color\": \"dark_aqua\", \"text\": \" Tier: \"}, {\"color\": \"aqua\", \"text\": \"" + player.getCurrentQuest().getQuestModel().Tier + "\n\"}, ";
 		
 		// Reward
-		json += "{color: \"dark_aqua\", text: \" Reward: \"}, {color: \"aqua\", text: \"" + economy.format(total_reward) + "\n\"";
+		json += "{\"color\": \"dark_aqua\", \"text\": \" Reward: \"}, {\"color\": \"aqua\", \"text\": \"" + economy.format(total_reward) + "\n\"";
 		
 		if(streak_bonus > 0 || cycle_bonus > 0)
 		{
-			json += ", hoverEvent: {action: \"show_text\", value: \"Base reward: " + economy.format(player.getCurrentQuest().getQuestModel().Reward);
+			json += ", \"hoverEvent\": {\"action\": \"show_text\", \"value\": \"Base reward: " + economy.format(player.getCurrentQuest().getQuestModel().Reward);
 			
 			if(streak_bonus > 0)
 				json += "\nStreak bonus: " + economy.format(streak_bonus);
@@ -343,14 +343,14 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 						
 			if((player.getCurrentQuest().getPlayerQuestModel().Progress == Math.floor(player.getCurrentQuest().getPlayerQuestModel().Progress)) && !Double.isInfinite(player.getCurrentQuest().getPlayerQuestModel().Progress))
 			{
-				json += "{color: \"dark_aqua\", text: \" Progress: \"}, {color: \"aqua\", text: \"" + (int)player.getCurrentQuest().getPlayerQuestModel().Progress + "/" + player.getCurrentQuest().getQuestModel().Amount + "\n\"}, ";
+				json += "{\"color\": \"dark_aqua\", \"text\": \" Progress: \"}, {\"color\": \"aqua\", \"text\": \"" + (int)player.getCurrentQuest().getPlayerQuestModel().Progress + "/" + player.getCurrentQuest().getQuestModel().Amount + "\n\"}, ";
 			}
 			else
 			{
-				json += "{color: \"dark_aqua\", text: \" Progress: \"}, {color: \"aqua\", text: \"" + player.getCurrentQuest().getPlayerQuestModel().Progress + "/" + player.getCurrentQuest().getQuestModel().Amount + "\n\"}, ";
+				json += "{\"color\": \"dark_aqua\", \"text\": \" Progress: \"}, {\"color\": \"aqua\", \"text\": \"" + player.getCurrentQuest().getPlayerQuestModel().Progress + "/" + player.getCurrentQuest().getQuestModel().Amount + "\n\"}, ";
 			}
 
-			json += "{color: \"dark_aqua\", text: \" Time left: \"}, {color: \"aqua\", text: \"" + hours + " hours " + minutes + " mins\n\"}, ";
+			json += "{\"color\": \"dark_aqua\", \"text\": \" Time left: \"}, {\"color\": \"aqua\", \"text\": \"" + hours + " hours " + minutes + " mins\n\"}, ";
 		}
 		// Next quest
 		else if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Complete || player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Cancelled)
@@ -362,24 +362,24 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			if(minutes < 0)
 				minutes = 0;
 			
-			json += "{color: \"aqua\", text: \" §m   §r \"}, {color: \"aqua\", text: \"Next Quest\"}, {color: \"aqua\", text: \"§m   §r\n\"}, ";
+			json += "{\"color\": \"aqua\", \"text\": \" §m   §r \"}, {\"color\": \"aqua\", \"text\": \"Next Quest\"}, {\"color\": \"aqua\", \"text\": \"§m   §r\n\"}, ";
 			
 			if(hours > 0 || minutes > 0)
-				json += "{color: \"gray\", text: \" You will be offered a new quest in " + hours + " hours " + minutes + " mins" + "\n\"}, ";
+				json += "{\"color\": \"gray\", \"text\": \" You will be offered a new quest in " + hours + " hours " + minutes + " mins" + "\n\"}, ";
 			else
-				json += "{color: \"gray\", text: \" You will be offered a new quest shortly.." + "\n\"}, ";
+				json += "{\"color\": \"gray\", \"text\": \" You will be offered a new quest shortly.." + "\n\"}, ";
 		}
 		
 		// --- Actions ---
-		json += "{color: \"aqua\", text: \" §m   §r \"}, {color: \"aqua\", text: \"Actions \"}, {color: \"aqua\", text: \"§m   §r\n\"}, ";
+		json += "{\"color\": \"aqua\", \"text\": \" §m   §r \"}, {\"color\": \"aqua\", \"text\": \"Actions \"}, {\"color\": \"aqua\", \"text\": \"§m   §r\n\"}, ";
 		
 		if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Cancelled)
-			json += "{color: \"green\", text: \" [Accept]\", clickEvent: {action: \"run_command\", value: \"/quest accept\" }, hoverEvent: {action: \"show_text\", value: \"" + ChatColor.GREEN + "Accept this quest.\"}}, ";
+			json += "{\"color\": \"green\", \"text\": \" [Accept]\", \"clickEvent\": {\"action\": \"run_command\", \"value\": \"/quest accept\" }, \"hoverEvent\": {\"action\": \"show_text\", \"value\": \"" + ChatColor.GREEN + "Accept this quest.\"}}, ";
 		else if(player.getCurrentQuest().getPlayerQuestModel().Status == QuestStatus.Accepted)
-			json += "{color: \"red\", text: \" [Cancel]\", clickEvent: {action: \"run_command\", value: \"/quest cancel\" }, hoverEvent: {action: \"show_text\", value: \"" + ChatColor.RED + "Cancel this quest.\nDoing so will disable\nreminders about this quest.\nIt will not break your streak.\"}}, ";
+			json += "{\"color\": \"red\", \"text\": \" [Cancel]\", \"clickEvent\": {\"action\": \"run_command\", \"value\": \"/quest cancel\" }, \"hoverEvent\": {\"action\": \"show_text\", \"value\": \"" + ChatColor.RED + "Cancel this quest.\nDoing so will disable\nreminders about this quest.\nIt will not break your streak.\"}}, ";
 		
-		json += "{text: \" \"},{color: \"gold\", text: \"[Stats]\", clickEvent: {action: \"run_command\", value: \"/quest me\" }, hoverEvent: {action: \"show_text\", value: \"View your personal stats.\"}}, ";
-		json += "{text: \" \"},{color: \"gold\", text: \"[Highscore]\", clickEvent: {action: \"run_command\", value: \"/quest hi\" }, hoverEvent: {action: \"show_text\", value: \"View the top 10.\"}}";
+		json += "{\"text\": \" \"},{\"color\": \"gold\", \"text\": \"[Stats]\", \"clickEvent\": {\"action\": \"run_command\", \"value\": \"/quest me\" }, \"hoverEvent\": {\"action\": \"show_text\", \"value\": \"View your personal stats.\"}}, ";
+		json += "{\"text\": \" \"},{\"color\": \"gold\", \"text\": \"[Highscore]\", \"clickEvent\": {\"action\": \"run_command\", \"value\": \"/quest hi\" }, \"hoverEvent\": {\"action\": \"show_text\", \"value\": \"View the top 10.\"}}";
 		
 		json += "]";
 		
@@ -415,9 +415,9 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		if(player.getCurrentQuest().cancel())
 		{
 			msg = "[";
-			msg += "{color: \"dark_aqua\", text: \" Quest cancelled. You won't be notified about this quest again, but if you change your mind you can just type \"},";
-			msg += "{color: \"yellow\", text: \"/quest\", clickEvent: {action: \"run_command\", value: \"/quest\" }, hoverEvent: {action: \"show_text\", value: \"View the quest details\"}},";
-			msg += "{color: \"dark_aqua\", text: \" and then accept the quest.\"}";
+			msg += "{\"color\": \"dark_aqua\", \"text\": \" Quest cancelled. You won't be notified about this quest again, but if you change your mind you can just type \"},";
+			msg += "{\"color\": \"yellow\", \"text\": \"/quest\", \"clickEvent\": {\"action\": \"run_command\", \"value\": \"/quest\" }, \"hoverEvent\": {\"action\": \"show_text\", \"value\": \"View the quest details\"}},";
+			msg += "{\"color\": \"dark_aqua\", \"text\": \" and then accept the quest.\"}";
 			msg += "]";
 			
 			sendJsonMessage(entity, msg);			
@@ -429,6 +429,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void completeQuest(Player entity)
 	{
 		QuestPlayer player = getQuestPlayer(entity);
@@ -521,13 +522,13 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			
 			giveMoney(player, player.getCurrentQuest().getPlayerQuestModel().Reward + player.getCurrentQuest().getPlayerQuestModel().StreakBonus + player.getCurrentQuest().getPlayerQuestModel().CycleBonus);
 						
-			entity.playSound(entity.getLocation(), Sound.LEVEL_UP, 1, 1);
+			entity.playSound(entity.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 									
 			// Broadcast to all players that this player completed a quest.
 			if(PluginConfig.BROADCAST_COMPLETIONS && !PluginConfig.SOFT_LAUNCH)
 			{
-				String json = "[{color: \"white\", text: \"" + entity.getName() + " has completed the quest \"},";
-				json += "{ text: \"§a[" + player.getCurrentQuest().getQuestModel().Name + "]\", hoverEvent: {action: \"show_text\", value: \"§a" + player.getCurrentQuest().getQuestModel().Name + "\n" + player.getCurrentQuest().getQuestModel().Description;
+				String json = "[{\"color\": \"white\", \"text\": \"" + entity.getName() + " has completed the quest \"},";
+				json += "{ \"text\": \"§a[" + player.getCurrentQuest().getQuestModel().Name + "]\", \"hoverEvent\": {\"action\": \"show_text\", \"value\": \"§a" + player.getCurrentQuest().getQuestModel().Name + "\n" + player.getCurrentQuest().getQuestModel().Description;
 				
 				if(player.getModel().Streak > 1)
 					json += "\n§oNow on a streak of " + player.getModel().Streak;
@@ -539,20 +540,26 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 			
 			if(PluginConfig.TITLE_ON_COMPLETION)
 			{
-				String json = "{ color: \"green\", text: \"Quest Completed!\" }";
-				getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:title " + entity.getName() + " subtitle " + json);
-				getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:title " + entity.getName() + " title ''");
+				final Player playerf = entity;
 				
-				final String player_name = entity.getName();
+				//String json = "{ \"color\": \"green\", \"text\": \"Quest Completed!\" }";
+				
+				playerf.sendTitle(ChatColor.GREEN + "Quest Completed!", "");
+				
+				//getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:title " + entity.getName() + " subtitle " + json);
+				//getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:title " + entity.getName() + " title ''");
+				
+				//final String player_name = entity.getName();
 				final String quest_name = player.getCurrentQuest().getQuestModel().Name;
-				
+								
 				getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable()
 				{
 					public void run()
 					{
-						String json = "{ color: \"green\", text: \"" + quest_name + "\" }";
-						getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:title " + player_name + " subtitle " + json);
-						getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:title " + player_name + " title ''");
+						playerf.sendTitle(ChatColor.GREEN + "Quest Completed!", ChatColor.GREEN + quest_name);
+						//String json = "{ \"color\": \"green\", \"text\": \"" + quest_name + "\" }";
+						//getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:title " + player_name + " subtitle " + json);
+						//getServer().dispatchCommand(getServer().getConsoleSender(), "minecraft:title " + player_name + " title ''");
 					}
 				}, 40);
 			}
@@ -778,7 +785,7 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		percentage = percentage / 100f;
 		//debug(percentage);
 		//entity.playSound(entity.getLocation(), Sound.ORB_PICKUP, 1, 1);
-		entity.playSound(entity.getLocation(), Sound.NOTE_PIANO, 1, percentage);
+		entity.playSound(entity.getLocation(), Sound.BLOCK_NOTE_HARP, 1, percentage);
 		
 		if(player.getCurrentQuest().updateProgress())
 		{
@@ -798,10 +805,10 @@ public class QuestsPlugin extends JavaPlugin implements Listener
 		{
 			public void run()
 			{
-				String msg = "[{color: \"green\", text: \" There is a new quest for you.\n\"},{color: \"dark_aqua\", text: \" [Click here] to get started.\", clickEvent: {action: \"run_command\", value: \"/quest\" }, hoverEvent: {action: \"show_text\", value: \"Clicking will show the\nquest details.\"}}]";
+				String msg = "[{\"color\": \"green\", \"text\": \" There is a new quest for you.\n\"},{\"color\": \"dark_aqua\", \"text\": \" [Click here] to get started.\", \"clickEvent\": {\"action\": \"run_command\", \"value\": \"/quest\" }, \"hoverEvent\": {\"action\": \"show_text\", \"value\": \"Clicking will show the\nquest details.\"}}]";
 				
 				if(status == QuestStatus.Accepted)
-					msg = "[{color: \"green\", text: \" Reminder: You have a quest that's not completed yet.\n\"},{color: \"dark_aqua\", text: \" [Click here] for details.\", clickEvent: {action: \"run_command\", value: \"/quest\" }, hoverEvent: {action: \"show_text\", value: \"Clicking will show the\nquest details.\"}}]";
+					msg = "[{\"color\": \"green\", \"text\": \" Reminder: You have a quest that's not completed yet.\n\"},{\"color\": \"dark_aqua\", \"text\": \" [Click here] for details.\", \"clickEvent\": {\"action\": \"run_command\", \"value\": \"/quest\" }, \"hoverEvent\": {\"action\": \"show_text\", \"value\": \"Clicking will show the\nquest details.\"}}]";
 				
 				if(status != QuestStatus.Cancelled && status != QuestStatus.Complete)
 					sendJsonMessage(player, msg);
